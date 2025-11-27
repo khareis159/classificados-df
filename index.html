@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super Classificados DF | V2</title>
+    
+    <!-- Fonte Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Palette Modern Tech */
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --vip-gradient: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+            --comece-color: #10b981;
+            --bg-body: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 100px; }
+
+        /* HEADER */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .brand h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.05em; color: var(--primary); }
+        .brand span { color: var(--text-main); }
+        
+        .btn-main {
+            background: var(--primary); color: white;
+            padding: 0.6rem 1.2rem; border-radius: 99px; border: none;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+            font-size: 0.9rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+        .btn-main:active { transform: scale(0.96); }
+
+        /* HERO & FILTERS */
+        .hero-stats { padding: 1.5rem 5%; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+        
+        .filters {
+            display: flex; gap: 10px; padding: 0 5% 1.5rem 5%;
+            overflow-x: auto; scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+        .pill {
+            background: white; border: 1px solid #e5e7eb;
+            padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
+            white-space: nowrap; cursor: pointer;
+        }
+        .pill.active { background: var(--text-main); color: white; border-color: var(--text-main); }
+
+        /* GRID */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 5%; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* CARD DESIGN */
+        .card {
+            background: var(--surface); border-radius: 16px; overflow: hidden;
+            box-shadow: var(--shadow-sm); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent; position: relative;
+            display: flex; flex-direction: column;
+        }
+        
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+        /* Plan Styles */
+        .card[data-plan="vip"] { border: 2px solid #FDB931; }
+        .card[data-plan="vip"] .badge-plan { background: var(--vip-gradient); color: #000; font-weight: 800; }
+        
+        .card[data-plan="comece"] { border: 1px solid var(--comece-color); }
+        .card[data-plan="comece"] .badge-plan { background: var(--comece-color); color: white; }
+        
+        .card[data-plan="padrao"] { border: 1px solid #e5e7eb; }
+        .card[data-plan="padrao"] .badge-plan { display: none; }
+
+        .card-img-wrapper { position: relative; height: 220px; overflow: hidden; background: #eee; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card:hover .card-img { transform: scale(1.05); }
+
+        .badge-plan {
+            position: absolute; top: 12px; left: 12px;
+            padding: 4px 12px; border-radius: 12px;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2;
+        }
+
+        .share-btn {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(255,255,255,0.9); border-radius: 50%;
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 2; border: none; font-size: 1.1rem;
+        }
+
+        .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
+        .card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; }
+        
+        .card-title { font-weight: 700; font-size: 1.1rem; line-height: 1.4; margin-bottom: 0.2rem; }
+        .card-price { font-size: 1.25rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem; }
+        .card-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .btn-wpp {
+            display: block; width: 100%; text-align: center;
+            background: #25D366; color: white; font-weight: 700;
+            padding: 0.8rem; border-radius: 12px; text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-wpp:hover { background: #128c7e; }
+
+        /* FAB (Mobile) */
+        .fab {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--primary); color: white; border: none;
+            font-size: 24px; box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+            cursor: pointer; display: none; z-index: 40;
+            justify-content: center; align-items: center;
+        }
+
+        /* MODAL E TOASTS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            z-index: 100; display: none; align-items: center; justify-content: center;
+        }
+        
+        .modal {
+            background: white; width: 95%; max-width: 500px;
+            border-radius: 20px; padding: 1.5rem; max-height: 90vh;
+            overflow-y: auto; position: relative; animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Steps */
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid #d1d5db; border-radius: 8px; outline: none; transition: 0.2s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        .plan-select { display: grid; gap: 10px; margin: 1rem 0; }
+        .plan-item { padding: 1rem; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .plan-item:hover { background: #f9fafb; }
+        .plan-item.selected { border-color: var(--primary); background: #eff6ff; }
+
+        .pix-area { background: #f3f4f6; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; }
+        .pix-key { font-family: monospace; background: white; padding: 0.5rem; border-radius: 4px; border: 1px dashed #cbd5e1; word-break: break-all; margin: 0.5rem 0; cursor: pointer; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 200; }
+        .toast { background: #333; color: white; padding: 12px 24px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; animation: fadeIn 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
+        
+        .loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .btn-main.desktop { display: none; }
+            .fab { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NOTIFICAÇÕES -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <header>
+        <div class="brand">
+            <h1>Super <span>Classificados</span> <span style="font-size: 0.5em; color:#999;">DF</span></h1>
+        </div>
+        <button class="btn-main desktop" onclick="App.openModal()">+ Anunciar</button>
+    </header>
+
+    <div class="hero-stats">
+        <p>Encontre oportunidades e faça negócios no DF. <br><span id="statsCounter">Carregando ofertas...</span></p>
+    </div>
+
+    <!-- FILTROS RÁPIDOS (Visual) -->
+    <div class="filters">
+        <div class="pill active">Todos</div>
+        <div class="pill">Veículos</div>
+        <div class="pill">Imóveis</div>
+        <div class="pill">Eletrônicos</div>
+        <div class="pill">Serviços</div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container">
+        <div id="adGrid" class="grid">
+            <!-- CARDS SERÃO INJETADOS AQUI -->
+        </div>
+    </div>
+
+    <button class="fab" onclick="App.openModal()">+</button>
+
+    <footer>
+        <p>Super Classificados DF • Segurança e Rapidez</p>
+        <p style="margin-top:5px;">&copy; 2025 Developed by <strong>Carlos Alberto Reis</strong></p>
+    </footer>
+
+    <!-- MODAL DO SISTEMA -->
+    <div id="mainModal" class="modal-overlay">
+        <div class="modal">
+            <button onclick="App.closeModal()" style="position:absolute; right:15px; top:15px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            
+            <!-- PASSO 1: PLANO -->
+            <div id="step1" class="step active">
+                <h2 style="margin-bottom:5px;">Escolha o destaque</h2>
+                <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Seu anúncio ficará no ar por 7 dias.</p>
+                
+                <div class="plan-select">
+                    <div class="plan-item" onclick="Form.selectPlan('vip', 10)">
+                        <div><strong>💎 VIP (Topo + Ouro)</strong></div>
+                        <div style="font-weight:bold; color:orange">R$ 10,00</div>
+                    </div>
+                    <div class="plan-item" onclick="Form.selectPlan('comece', 6)">
+                        <div><strong>🚀 Comece (Destaque)</strong></div>
+                        <div style="font-weight:bold; color:#10b981">R$ 6,00</div>
+                    </div>
+                    <div class="plan-item" onclick="Form.selectPlan('padrao', 3)">
+                        <div><strong>📄 Padrão</strong></div>
+                        <div style="font-weight:bold; color:#6b7280">R$ 3,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASSO 2: DADOS -->
+            <div id="step2" class="step">
+                <h2>Detalhes do Anúncio</h2>
+                <div class="input-group">
+                    <label>Título</label>
+                    <input type="text" id="inpTitle" class="form-control" placeholder="Ex: Samsung Galaxy S20">
+                </div>
+                <div class="input-group">
+                    <label>Preço (R$)</label>
+                    <input type="number" id="inpPrice" class="form-control" placeholder="0,00">
+                </div>
+                <div class="input-group">
+                    <label>Descrição</label>
+                    <textarea id="inpDesc" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>WhatsApp (DDD + Número)</label>
+                    <input type="tel" id="inpPhone" class="form-control" placeholder="61999999999">
+                </div>
+                <div class="input-group">
+                    <label>Foto do Produto</label>
+                    <input type="file" id="inpImg" accept="image/*" class="form-control">
+                    <small style="color:#d97706">A imagem será otimizada automaticamente.</small>
+                </div>
+                <button onclick="Form.validateAndAdvance()" class="btn-main" style="width:100%">Continuar</button>
+            </div>
+
+            <!-- PASSO 3: PAGAMENTO -->
+            <div id="step3" class="step">
+                <h2 style="text-align:center">Pagamento Seguro</h2>
+                <p style="text-align:center; color:#666; margin-bottom:1rem;">Realize o Pix para publicar</p>
+                
+                <div class="pix-area">
+                    <p>Valor: <strong id="pixValue" style="font-size:1.2rem;">R$ 0,00</strong></p>
+                    <div style="margin:10px auto; width:100px; height:100px; background:white; border:1px solid #ccc; display:flex; align-items:center; justify-content:center;">QR</div>
+                    <p style="font-size:0.8rem;">Chave Pix (Celular)</p>
+                    <div class="pix-key" onclick="Form.copyPix()">61 999487649</div>
+                    <small style="color:#2563eb">Toque na chave para copiar</small>
+                </div>
+
+                <button id="btnPublish" onclick="Form.submit()" class="btn-main" style="width:100%; background:#10b981;">
+                    Confirmar PIX e Publicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT MODULAR -->
+    <script>
+        /**
+         * CONFIGURAÇÕES E UTILITÁRIOS
+         * Gerenciado por: Carlos Alberto Reis
+         */
+        const Config = {
+            dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads",
+            pixKey: "61 999487649",
+            expireDays: 7
+        };
+
+        const Utils = {
+            showToast: (msg, duration = 3000) => {
+                const el = document.createElement('div');
+                el.className = 'toast';
+                el.innerText = msg;
+                document.getElementById('toastContainer').appendChild(el);
+                setTimeout(() => el.remove(), duration);
+            },
+            
+            formatCurrency: (val) => {
+                return parseFloat(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            },
+
+            compressImage: (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            // Redimensionar para max 600px largura (Otimização Mobile)
+                            const scaleSize = 600 / img.width;
+                            canvas.width = 600;
+                            canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            // Compressão JPEG 0.6
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        }
+                        img.onerror = error => reject(error);
+                    }
+                });
+            },
+
+            dateDiffInDays: (a, b) => {
+                const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+                return Math.floor((a - b) / _MS_PER_DAY);
+            }
+        };
+
+        /**
+         * CAMADA DE DADOS (DATABASE REST API)
+         * Usa fetch nativo para ser "leve e solto"
+         */
+        const Db = {
+            getAll: async () => {
+                try {
+                    const res = await fetch(`${Config.dbUrl}.json`);
+                    const data = await res.json();
+                    if(!data) return [];
+                    // Converter objeto Firebase em Array
+                    return Object.keys(data).map(key => ({...data[key], id: key}));
+                } catch(e) { console.error(e); return []; }
+            },
+
+            create: async (adData) => {
+                try {
+                    await fetch(`${Config.dbUrl}.json`, {
+                        method: 'POST',
+                        body: JSON.stringify(adData)
+                    });
+                    return true;
+                } catch(e) { return false; }
+            },
+
+            delete: async (id) => {
+                await fetch(`${Config.dbUrl}/${id}.json`, { method: 'DELETE' });
+            },
+
+            incrementView: async (id, currentViews) => {
+                await fetch(`${Config.dbUrl}/${id}/views.json`, {
+                    method: 'PUT',
+                    body: currentViews + 1
+                });
+            }
+        };
+
+        /**
+         * LÓGICA DO FORMULÁRIO
+         */
+        const Form = {
+            data: { plan: 'padrao', price: 3, image: null },
+
+            selectPlan: (plan, price) => {
+                Form.data.plan = plan;
+                Form.data.price = price;
+                
+                document.querySelectorAll('.plan-item').forEach(el => el.classList.remove('selected'));
+                event.currentTarget.classList.add('selected');
+                
+                setTimeout(() => App.changeStep(2), 300);
+            },
+
+            validateAndAdvance: async () => {
+                const title = document.getElementById('inpTitle').value;
+                const price = document.getElementById('inpPrice').value;
+                const desc = document.getElementById('inpDesc').value;
+                const phone = document.getElementById('inpPhone').value;
+                const fileInput = document.getElementById('inpImg');
+
+                if(!title || !price || !phone) return Utils.showToast("Preencha campos obrigatórios!");
+
+                // Otimizando imagem antes de avançar
+                if(fileInput.files[0]) {
+                    Utils.showToast("Processando imagem...", 2000);
+                    Form.data.image = await Utils.compressImage(fileInput.files[0]);
+                } else {
+                    Form.data.image = "https://placehold.co/600x400?text=Sem+Foto";
+                }
+
+                Form.data.title = title;
+                Form.data.prodPrice = price;
+                Form.data.desc = desc;
+                Form.data.phone = phone.replace(/\D/g,'');
+
+                document.getElementById('pixValue').innerText = Utils.formatCurrency(Form.data.price);
+                App.changeStep(3);
+            },
+
+            copyPix: () => {
+                navigator.clipboard.writeText(Config.pixKey);
+                Utils.showToast("Chave Pix copiada!");
+            },
+
+            submit: async () => {
+                const btn = document.getElementById('btnPublish');
+                btn.innerHTML = '<div class="loading-spinner"></div> Publicando...';
+                
+                const payload = {
+                    ...Form.data,
+                    createdAt: Date.now(),
+                    views: 0,
+                    active: true
+                };
+
+                const success = await Db.create(payload);
+                
+                if(success) {
+                    Utils.showToast("Sucesso! Anúncio Publicado.");
+                    App.closeModal();
+                    App.init(); // Reload
+                } else {
+                    Utils.showToast("Erro na publicação. Tente novamente.");
+                }
+                btn.innerHTML = 'Confirmar PIX e Publicar';
+            }
+        };
+
+        /**
+         * APLICAÇÃO PRINCIPAL (CONTROLLER)
+         */
+        const App = {
+            init: async () => {
+                document.getElementById('adGrid').innerHTML = '<div class="loading-spinner"></div> Buscando oportunidades...';
+                
+                let ads = await Db.getAll();
+                const now = Date.now();
+                let cleanCount = 0;
+
+                // 1. Faxina e Filtro
+                const activeAds = [];
+                for(let ad of ads) {
+                    // Verifica expiração (7 dias)
+                    if(Utils.dateDiffInDays(now, ad.createdAt) >= Config.expireDays) {
+                        Db.delete(ad.id); // Deleta silenciosamente do banco
+                        cleanCount++;
+                    } else {
+                        activeAds.push(ad);
+                    }
+                }
+                
+                if(cleanCount > 0) console.log(`Faxineiro Virtual removeu ${cleanCount} anúncios expirados.`);
+
+                // 2. Ordenação (Vip > Comece > Padrão > Data)
+                const weights = { vip: 3, comece: 2, padrao: 1 };
+                activeAds.sort((a,b) => {
+                    const weightDiff = weights[b.plan] - weights[a.plan];
+                    if(weightDiff !== 0) return weightDiff;
+                    return b.createdAt - a.createdAt; // Mais recentes primeiro no mesmo plano
+                });
+
+                // 3. Renderização
+                App.renderAds(activeAds);
+                document.getElementById('statsCounter').innerText = `${activeAds.length} anúncios ativos em tempo real`;
+            },
+
+            renderAds: (ads) => {
+                const grid = document.getElementById('adGrid');
+                grid.innerHTML = "";
+
+                if(ads.length === 0) {
+                    grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#888;">Nenhum anúncio disponível no momento.</p>';
+                    return;
+                }
+
+                ads.forEach(ad => {
+                    const daysLeft = Config.expireDays - Utils.dateDiffInDays(Date.now(), ad.createdAt);
+                    const whatsappUrl = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no Super Classificados!`;
+                    
+                    const badgeTitle = ad.plan === 'vip' ? '💎 Destaque VIP' : (ad.plan === 'comece' ? '🚀 Oportunidade' : '');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.setAttribute('data-plan', ad.plan);
+                    card.innerHTML = `
+                        <div class="badge-plan">${badgeTitle}</div>
+                        <button class="share-btn" onclick="App.shareAd('${ad.title}', '${ad.desc}')">📤</button>
+                        <div class="card-img-wrapper">
+                            <img src="${ad.image}" class="card-img" alt="${ad.title}" loading="lazy">
+                        </div>
+                        <div class="card-body">
+                            <div class="card-meta">
+                                <span>👁 ${ad.views || 0} views</span>
+                                <span>⏳ ${daysLeft} dias restantes</span>
+                            </div>
+                            <h3 class="card-title">${ad.title}</h3>
+                            <div class="card-price">${Utils.formatCurrency(ad.prodPrice)}</div>
+                            <p class="card-desc">${ad.desc}</p>
+                            <a href="${whatsappUrl}" target="_blank" class="btn-wpp" onclick="Db.incrementView('${ad.id}', ${ad.views||0})">
+                                Chamar no WhatsApp
+                            </a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            },
+
+            shareAd: (title, text) => {
+                if (navigator.share) {
+                    navigator.share({ title: 'Super Classificados DF', text: `${title} - ${text}`, url: window.location.href })
+                    .catch((error) => console.log('Erro ao compartilhar', error));
+                } else {
+                    Utils.showToast("Link copiado para a área de transferência!");
+                }
+            },
+
+            openModal: () => {
+                document.getElementById('mainModal').style.display = 'flex';
+                App.changeStep(1);
+                // Reset inputs logic here if needed
+            },
+            
+            closeModal: () => {
+                document.getElementById('mainModal').style.display = 'none';
+            },
+
+            changeStep: (step) => {
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                document.getElementById(`step${step}`).classList.add('active');
+            }
+        };
+
+        // Iniciar App
+        window.addEventListener('load', App.init);
+
+    </script>
+</body>
+</html>
