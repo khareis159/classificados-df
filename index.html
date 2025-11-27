@@ -3,563 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Classificados DF | V2</title>
+    <title>Super Classificados DF | Portal V3</title>
     
-    <!-- Fonte Google Fonts -->
+    <!-- Fonte e Ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Palette Modern Tech */
+            /* Cores e Estilo */
             --primary: #2563eb;
             --primary-dark: #1e40af;
-            --vip-gradient: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
-            --comece-color: #10b981;
-            --bg-body: #f3f4f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --vip: #FDB931;
+            
+            --bg-body: #f8fafc;
             --surface: #ffffff;
             --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            
+            --admin-bar: #1f2937;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 100px; }
+        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 80px; }
 
         /* HEADER */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             position: sticky; top: 0; z-index: 50;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e2e8f0;
             padding: 1rem 5%;
             display: flex; justify-content: space-between; align-items: center;
         }
-
-        .brand h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.05em; color: var(--primary); }
-        .brand span { color: var(--text-main); }
         
-        .btn-main {
-            background: var(--primary); color: white;
-            padding: 0.6rem 1.2rem; border-radius: 99px; border: none;
-            font-weight: 600; cursor: pointer; transition: 0.2s;
-            font-size: 0.9rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        .brand h1 { font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+        .brand span { color: var(--text-main); }
+        .admin-badge { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; text-transform: uppercase; margin-left: 5px; display: none; vertical-align: middle;}
+
+        /* ADMIN BAR (SÓ PARA VC) */
+        #adminToolbar {
+            display: none; background: var(--admin-bar); color: white;
+            padding: 10px 5%; font-size: 0.85rem; justify-content: space-between; align-items: center;
         }
-        .btn-main:active { transform: scale(0.96); }
+        .btn-admin-logout { background: #4b5563; border: none; color: white; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
         /* HERO & FILTERS */
-        .hero-stats { padding: 1.5rem 5%; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+        .categories-wrapper { padding: 1rem 5%; background: white; border-bottom: 1px solid #eee; overflow-x: auto; white-space: nowrap; -ms-overflow-style: none; scrollbar-width: none; }
+        .categories-wrapper::-webkit-scrollbar { display: none; }
         
-        .filters {
-            display: flex; gap: 10px; padding: 0 5% 1.5rem 5%;
-            overflow-x: auto; scrollbar-width: none;
+        .cat-chip {
+            display: inline-block; padding: 8px 16px; margin-right: 8px;
+            background: #f1f5f9; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            color: var(--secondary); cursor: pointer; transition: 0.2s; border: 1px solid transparent;
         }
-        .filters::-webkit-scrollbar { display: none; }
-        .pill {
-            background: white; border: 1px solid #e5e7eb;
-            padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
-            white-space: nowrap; cursor: pointer;
-        }
-        .pill.active { background: var(--text-main); color: white; border-color: var(--text-main); }
+        .cat-chip:hover { background: #e2e8f0; }
+        .cat-chip.active { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(37,99,235,0.2); }
 
         /* GRID */
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 5%; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 2rem 5%; }
+        
+        .section-title { font-size: 1.2rem; margin: 2rem 0 1rem 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
         }
 
-        /* CARD DESIGN */
+        /* CARD V3 */
         .card {
-            background: var(--surface); border-radius: 16px; overflow: hidden;
-            box-shadow: var(--shadow-sm); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent; position: relative;
-            display: flex; flex-direction: column;
-        }
-        
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-
-        /* Plan Styles */
-        .card[data-plan="vip"] { border: 2px solid #FDB931; }
-        .card[data-plan="vip"] .badge-plan { background: var(--vip-gradient); color: #000; font-weight: 800; }
-        
-        .card[data-plan="comece"] { border: 1px solid var(--comece-color); }
-        .card[data-plan="comece"] .badge-plan { background: var(--comece-color); color: white; }
-        
-        .card[data-plan="padrao"] { border: 1px solid #e5e7eb; }
-        .card[data-plan="padrao"] .badge-plan { display: none; }
-
-        .card-img-wrapper { position: relative; height: 220px; overflow: hidden; background: #eee; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.05); }
-
-        .badge-plan {
-            position: absolute; top: 12px; left: 12px;
-            padding: 4px 12px; border-radius: 12px;
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2;
+            background: var(--surface); border-radius: 12px; overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.3s;
+            position: relative; display: flex; flex-direction: column;
+            border: 1px solid #eee;
         }
 
-        .share-btn {
-            position: absolute; top: 12px; right: 12px;
-            background: rgba(255,255,255,0.9); border-radius: 50%;
-            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 2; border: none; font-size: 1.1rem;
+        /* CARD STATUS ADMIN */
+        .card.pending { border: 2px dashed var(--danger); opacity: 0.9; }
+        .status-strip {
+            background: var(--danger); color: white; text-align: center; font-size: 0.75rem; font-weight: bold; padding: 5px;
+            display: none; /* Só aparece se for pendente */
         }
+        .card.pending .status-strip { display: block; }
+
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        .card[data-plan="vip"] { border: 2px solid var(--vip); }
+        .card[data-plan="comece"] { border: 1px solid var(--success); }
+
+        .card-img-box { position: relative; height: 200px; background: #eee; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .cat-tag { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; }
+        .plan-tag { position: absolute; top: 10px; left: 10px; background: var(--vip); color: #000; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .card[data-plan="vip"] .plan-tag { display: block; background: linear-gradient(135deg, #FFD700, #FDB931); }
+        .card[data-plan="comece"] .plan-tag { display: block; background: var(--success); color: white; }
 
         .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
-        .card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; }
+        .card-price { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.2rem; }
+        .card-title { font-size: 1rem; font-weight: 600; color: #4b5563; margin-bottom: 0.8rem; line-height: 1.4; }
         
-        .card-title { font-weight: 700; font-size: 1.1rem; line-height: 1.4; margin-bottom: 0.2rem; }
-        .card-price { font-size: 1.25rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem; }
-        .card-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .btn-wpp {
-            display: block; width: 100%; text-align: center;
-            background: #25D366; color: white; font-weight: 700;
-            padding: 0.8rem; border-radius: 12px; text-decoration: none;
-            transition: 0.2s;
+        .admin-controls {
+            margin-top: auto; padding-top: 1rem; border-top: 1px solid #eee;
+            display: flex; gap: 5px; justify-content: space-between;
         }
-        .btn-wpp:hover { background: #128c7e; }
-
-        /* FAB (Mobile) */
+        .btn-ctrl { flex: 1; border: none; padding: 8px; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .btn-approve { background: var(--success); }
+        .btn-edit { background: var(--primary); }
+        .btn-delete { background: var(--danger); }
+        .btn-wpp { width: 100%; background: #25D366; color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: bold; margin-top: auto; display: block; }
+        
+        /* FAB */
         .fab {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 56px; height: 56px; border-radius: 50%;
-            background: var(--primary); color: white; border: none;
-            font-size: 24px; box-shadow: 0 4px 12px rgba(37,99,235,0.4);
-            cursor: pointer; display: none; z-index: 40;
-            justify-content: center; align-items: center;
+            position: fixed; bottom: 25px; right: 25px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--primary); color: white;
+            font-size: 28px; border: none; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100;
         }
 
-        /* MODAL E TOASTS */
+        /* FOOTER & COPYRIGHT */
+        footer {
+            background: white; border-top: 1px solid #eee; padding: 2rem; text-align: center; color: var(--secondary); font-size: 0.8rem; margin-top: 3rem;
+        }
+        .admin-login-link { cursor: pointer; color: #ddd; margin-left: 10px; text-decoration: none; }
+        .admin-login-link:hover { color: var(--secondary); }
+
+        /* MODAL */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            z-index: 100; display: none; align-items: center; justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            z-index: 200; display: none; align-items: center; justify-content: center;
         }
-        
-        .modal {
+        .modal-content {
             background: white; width: 95%; max-width: 500px;
-            border-radius: 20px; padding: 1.5rem; max-height: 90vh;
-            overflow-y: auto; position: relative; animation: slideUp 0.3s ease;
+            max-height: 90vh; overflow-y: auto; border-radius: 16px;
+            padding: 1.5rem; position: relative;
         }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Steps */
-        .step { display: none; }
-        .step.active { display: block; }
-
-        .input-group { margin-bottom: 1rem; }
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
-        .form-control { width: 100%; padding: 0.8rem; border: 1px solid #d1d5db; border-radius: 8px; outline: none; transition: 0.2s; }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-
-        .plan-select { display: grid; gap: 10px; margin: 1rem 0; }
-        .plan-item { padding: 1rem; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .plan-item:hover { background: #f9fafb; }
-        .plan-item.selected { border-color: var(--primary); background: #eff6ff; }
-
-        .pix-area { background: #f3f4f6; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; }
-        .pix-key { font-family: monospace; background: white; padding: 0.5rem; border-radius: 4px; border: 1px dashed #cbd5e1; word-break: break-all; margin: 0.5rem 0; cursor: pointer; }
-
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 200; }
-        .toast { background: #333; color: white; padding: 12px 24px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; animation: fadeIn 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
-        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
         
-        .loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        /* Forms */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--secondary); }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
+        select.form-control { background: white; }
+
+        /* LOADING */
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @media (max-width: 768px) {
-            .btn-main.desktop { display: none; }
-            .fab { display: flex; }
-        }
+        /* Toast */
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 30px; z-index: 300; font-size: 0.9rem; animation: fadein 0.3s; }
     </style>
 </head>
 <body>
 
     <!-- NOTIFICAÇÕES -->
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toast" style="display:none;" class="toast">Mensagem</div>
+
+    <!-- BARRA ADMIN -->
+    <div id="adminToolbar">
+        <span>🔒 Painel Administrativo Ativo</span>
+        <button class="btn-admin-logout" onclick="Admin.logout()">Sair</button>
+    </div>
 
     <header>
         <div class="brand">
-            <h1>Super <span>Classificados</span> <span style="font-size: 0.5em; color:#999;">DF</span></h1>
+            <h1>Super <span>Classificados</span> <span class="admin-badge" id="adminBadge">Admin</span></h1>
         </div>
-        <button class="btn-main desktop" onclick="App.openModal()">+ Anunciar</button>
+        <button class="cat-chip active" style="background: var(--primary); color:white;" onclick="Modal.open()">+ Publicar</button>
     </header>
 
-    <div class="hero-stats">
-        <p>Encontre oportunidades e faça negócios no DF. <br><span id="statsCounter">Carregando ofertas...</span></p>
+    <!-- CATEGORIAS -->
+    <div class="categories-wrapper" id="categoryList">
+        <!-- Renderizado via JS -->
     </div>
 
-    <!-- FILTROS RÁPIDOS (Visual) -->
-    <div class="filters">
-        <div class="pill active">Todos</div>
-        <div class="pill">Veículos</div>
-        <div class="pill">Imóveis</div>
-        <div class="pill">Eletrônicos</div>
-        <div class="pill">Serviços</div>
-    </div>
-
-    <!-- CONTEÚDO PRINCIPAL -->
     <div class="container">
-        <div id="adGrid" class="grid">
-            <!-- CARDS SERÃO INJETADOS AQUI -->
+        <!-- ADMIN: PENDENTES -->
+        <div id="pendingSection" style="display:none;">
+            <div class="section-title" style="color:var(--danger)">
+                ⚠️ Fila de Aprovação (Somente Admin)
+            </div>
+            <div id="gridPending" class="grid" style="margin-bottom: 3rem;"></div>
+        </div>
+
+        <!-- PUBLICO -->
+        <div class="section-title">
+            <span id="currentCatTitle">Últimos Anúncios</span>
+            <small style="font-weight:400; font-size:0.8rem; color:#999;" id="adsCount"></small>
+        </div>
+        
+        <div id="gridPublic" class="grid">
+            <div class="spinner"></div>
         </div>
     </div>
 
-    <button class="fab" onclick="App.openModal()">+</button>
+    <button class="fab" onclick="Modal.open()">+</button>
 
     <footer>
-        <p>Super Classificados DF • Segurança e Rapidez</p>
-        <p style="margin-top:5px;">&copy; 2025 Developed by <strong>Carlos Alberto Reis</strong></p>
+        <p>Super Classificados DF © 2025<br>Termos de Uso • Segurança</p>
+        <p style="margin-top:10px; font-size:0.75rem; color:#ccc;">Developed by <strong>Carlos Alberto Reis</strong> <span class="admin-login-link" onclick="Admin.loginPrompt()">🔒</span></p>
     </footer>
 
-    <!-- MODAL DO SISTEMA -->
+    <!-- MODAL PRINCIPAL -->
     <div id="mainModal" class="modal-overlay">
-        <div class="modal">
-            <button onclick="App.closeModal()" style="position:absolute; right:15px; top:15px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-            
-            <!-- PASSO 1: PLANO -->
-            <div id="step1" class="step active">
-                <h2 style="margin-bottom:5px;">Escolha o destaque</h2>
-                <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Seu anúncio ficará no ar por 7 dias.</p>
+        <div class="modal-content">
+            <span onclick="Modal.close()" style="position:absolute; right:15px; top:10px; font-size:1.5rem; cursor:pointer; color:#999">&times;</span>
+            <h2 id="modalTitle" style="margin-bottom:15px;">Novo Anúncio</h2>
+
+            <form id="adForm" onsubmit="return false;">
+                <!-- ETAPA 1 -->
+                <div id="step1">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="inpCat" class="form-control">
+                            <option value="veiculos">🚗 Veículos</option>
+                            <option value="imoveis">🏡 Imóveis</option>
+                            <option value="eletronicos">📱 Eletrônicos</option>
+                            <option value="empregos">💼 Empregos</option>
+                            <option value="servicos">🛠 Serviços</option>
+                            <option value="usados">📦 Usados / Desapego</option>
+                            <option value="avisos">⚠️ Avisos / Comunicados</option>
+                            <option value="achados">🔎 Achados e Perdidos</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Destaque</label>
+                        <select id="inpPlan" class="form-control" onchange="Form.updatePrice()">
+                            <option value="padrao">Padrão (R$ 3,00)</option>
+                            <option value="comece">🚀 Comece (R$ 6,00)</option>
+                            <option value="vip">💎 VIP (R$ 10,00)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="inpTitle" class="form-control" placeholder="O que você está anunciando?">
+                    </div>
+                    
+                    <button class="form-control" style="background:var(--primary); color:white; font-weight:bold; margin-top:10px;" onclick="Form.goStep2()">Continuar</button>
+                </div>
+
+                <!-- ETAPA 2 -->
+                <div id="step2" style="display:none;">
+                    <div class="form-group">
+                        <label>Preço (R$)</label>
+                        <input type="number" id="inpPrice" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea id="inpDesc" class="form-control" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>WhatsApp (DDD + Número)</label>
+                        <input type="tel" id="inpPhone" class="form-control" placeholder="61999999999">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto</label>
+                        <input type="file" id="inpImg" accept="image/*" class="form-control">
+                    </div>
+
+                    <button class="form-control" style="background:#ddd; color:#333; font-weight:bold;" onclick="Form.goStep1()">Voltar</button>
+                    <button class="form-control" style="background:var(--success); color:white; font-weight:bold; margin-top:10px;" onclick="Form.submitAd()">
+                        Finalizar e Pagar Pix
+                    </button>
+                </div>
+            </form>
+
+            <!-- TELA SUCESSO -->
+            <div id="stepSuccess" style="display:none; text-align:center;">
+                <div style="font-size:3rem;">📝</div>
+                <h3>Anúncio Recebido!</h3>
+                <p style="color:var(--secondary); font-size:0.9rem; margin:10px 0;">Seu anúncio ID #<span id="newAdId"></span> está <strong>PENDENTE</strong>.</p>
                 
-                <div class="plan-select">
-                    <div class="plan-item" onclick="Form.selectPlan('vip', 10)">
-                        <div><strong>💎 VIP (Topo + Ouro)</strong></div>
-                        <div style="font-weight:bold; color:orange">R$ 10,00</div>
-                    </div>
-                    <div class="plan-item" onclick="Form.selectPlan('comece', 6)">
-                        <div><strong>🚀 Comece (Destaque)</strong></div>
-                        <div style="font-weight:bold; color:#10b981">R$ 6,00</div>
-                    </div>
-                    <div class="plan-item" onclick="Form.selectPlan('padrao', 3)">
-                        <div><strong>📄 Padrão</strong></div>
-                        <div style="font-weight:bold; color:#6b7280">R$ 3,00</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PASSO 2: DADOS -->
-            <div id="step2" class="step">
-                <h2>Detalhes do Anúncio</h2>
-                <div class="input-group">
-                    <label>Título</label>
-                    <input type="text" id="inpTitle" class="form-control" placeholder="Ex: Samsung Galaxy S20">
-                </div>
-                <div class="input-group">
-                    <label>Preço (R$)</label>
-                    <input type="number" id="inpPrice" class="form-control" placeholder="0,00">
-                </div>
-                <div class="input-group">
-                    <label>Descrição</label>
-                    <textarea id="inpDesc" rows="3" class="form-control"></textarea>
-                </div>
-                <div class="input-group">
-                    <label>WhatsApp (DDD + Número)</label>
-                    <input type="tel" id="inpPhone" class="form-control" placeholder="61999999999">
-                </div>
-                <div class="input-group">
-                    <label>Foto do Produto</label>
-                    <input type="file" id="inpImg" accept="image/*" class="form-control">
-                    <small style="color:#d97706">A imagem será otimizada automaticamente.</small>
-                </div>
-                <button onclick="Form.validateAndAdvance()" class="btn-main" style="width:100%">Continuar</button>
-            </div>
-
-            <!-- PASSO 3: PAGAMENTO -->
-            <div id="step3" class="step">
-                <h2 style="text-align:center">Pagamento Seguro</h2>
-                <p style="text-align:center; color:#666; margin-bottom:1rem;">Realize o Pix para publicar</p>
-                
-                <div class="pix-area">
-                    <p>Valor: <strong id="pixValue" style="font-size:1.2rem;">R$ 0,00</strong></p>
-                    <div style="margin:10px auto; width:100px; height:100px; background:white; border:1px solid #ccc; display:flex; align-items:center; justify-content:center;">QR</div>
-                    <p style="font-size:0.8rem;">Chave Pix (Celular)</p>
-                    <div class="pix-key" onclick="Form.copyPix()">61 999487649</div>
-                    <small style="color:#2563eb">Toque na chave para copiar</small>
+                <div style="background:#fff7ed; padding:15px; border-radius:10px; border:1px solid #fed7aa; margin:15px 0;">
+                    <p style="font-weight:bold; color:#9a3412;">PAGAMENTO PENDENTE</p>
+                    <p>Valor: <strong id="finalPrice">R$ 0,00</strong></p>
+                    <p style="font-size:0.8rem; margin-top:5px;">Chave Pix: <strong>61 999487649</strong></p>
                 </div>
 
-                <button id="btnPublish" onclick="Form.submit()" class="btn-main" style="width:100%; background:#10b981;">
-                    Confirmar PIX e Publicar
+                <p style="font-size:0.85rem;">⚠️ Seu anúncio será revisado e publicado em até 10 horas após a confirmação do pagamento.</p>
+
+                <button id="btnSendReceipt" class="form-control" style="background:#25D366; color:white; font-weight:bold; margin-top:15px;">
+                    Enviar Comprovante no WhatsApp
                 </button>
             </div>
+
         </div>
     </div>
 
-    <!-- JAVASCRIPT MODULAR -->
     <script>
         /**
-         * CONFIGURAÇÕES E UTILITÁRIOS
-         * Gerenciado por: Carlos Alberto Reis
+         * SISTEMA SUPER CLASSIFICADOS V3
+         * Configurações Gerais
          */
         const Config = {
             dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads",
-            pixKey: "61 999487649",
-            expireDays: 7
+            adminPass: "0123class2025",
+            pixKey: "61999487649",
+            categories: [
+                {id:'todos', name:'Todos'},
+                {id:'veiculos', name:'Veículos'},
+                {id:'imoveis', name:'Imóveis'},
+                {id:'eletronicos', name:'Eletrônicos'},
+                {id:'empregos', name:'Empregos'},
+                {id:'servicos', name:'Serviços'},
+                {id:'usados', name:'Usados'},
+                {id:'avisos', name:'Avisos'},
+                {id:'achados', name:'Achados e Perdidos'}
+            ]
         };
 
         const Utils = {
-            showToast: (msg, duration = 3000) => {
-                const el = document.createElement('div');
-                el.className = 'toast';
-                el.innerText = msg;
-                document.getElementById('toastContainer').appendChild(el);
-                setTimeout(() => el.remove(), duration);
+            $: (id) => document.getElementById(id),
+            formatMoney: (v) => parseFloat(v).toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
+            showToast: (msg) => {
+                const t = Utils.$('toast'); t.innerText = msg; t.style.display='block';
+                setTimeout(()=>t.style.display='none', 3000);
             },
-            
-            formatCurrency: (val) => {
-                return parseFloat(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            },
-
             compressImage: (file) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
-                    reader.onload = (event) => {
+                    reader.onload = (e) => {
                         const img = new Image();
-                        img.src = event.target.result;
+                        img.src = e.target.result;
                         img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            // Redimensionar para max 600px largura (Otimização Mobile)
-                            const scaleSize = 600 / img.width;
-                            canvas.width = 600;
-                            canvas.height = img.height * scaleSize;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            // Compressão JPEG 0.6
-                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                            const cvs = document.createElement('canvas');
+                            const scale = 500 / img.width;
+                            cvs.width = 500; cvs.height = img.height * scale;
+                            cvs.getContext('2d').drawImage(img,0,0,cvs.width,cvs.height);
+                            resolve(cvs.toDataURL('image/jpeg', 0.6));
                         }
-                        img.onerror = error => reject(error);
                     }
                 });
-            },
-
-            dateDiffInDays: (a, b) => {
-                const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-                return Math.floor((a - b) / _MS_PER_DAY);
             }
         };
 
         /**
-         * CAMADA DE DADOS (DATABASE REST API)
-         * Usa fetch nativo para ser "leve e solto"
+         * CAMADA DE DADOS
          */
         const Db = {
-            getAll: async () => {
-                try {
-                    const res = await fetch(`${Config.dbUrl}.json`);
-                    const data = await res.json();
-                    if(!data) return [];
-                    // Converter objeto Firebase em Array
-                    return Object.keys(data).map(key => ({...data[key], id: key}));
-                } catch(e) { console.error(e); return []; }
+            list: async () => {
+                const r = await fetch(Config.dbUrl + ".json");
+                const d = await r.json();
+                return d ? Object.keys(d).map(k=>({...d[k], id:k})) : [];
             },
-
-            create: async (adData) => {
-                try {
-                    await fetch(`${Config.dbUrl}.json`, {
-                        method: 'POST',
-                        body: JSON.stringify(adData)
-                    });
-                    return true;
-                } catch(e) { return false; }
+            create: async (data) => {
+                data.status = 'pending'; // PADRÃO: PENDENTE
+                data.createdAt = Date.now();
+                const r = await fetch(Config.dbUrl + ".json", {method:'POST', body:JSON.stringify(data)});
+                const d = await r.json();
+                return d.name; // ID criado
             },
-
-            delete: async (id) => {
-                await fetch(`${Config.dbUrl}/${id}.json`, { method: 'DELETE' });
+            updateStatus: async (id, status) => {
+                await fetch(`${Config.dbUrl}/${id}/status.json`, {method:'PUT', body:JSON.stringify(status)});
             },
-
-            incrementView: async (id, currentViews) => {
-                await fetch(`${Config.dbUrl}/${id}/views.json`, {
-                    method: 'PUT',
-                    body: currentViews + 1
-                });
+            updateData: async (id, newData) => {
+                 await fetch(`${Config.dbUrl}/${id}.json`, {method:'PATCH', body:JSON.stringify(newData)});
+            },
+            remove: async (id) => {
+                await fetch(`${Config.dbUrl}/${id}.json`, {method:'DELETE'});
             }
         };
 
         /**
-         * LÓGICA DO FORMULÁRIO
+         * ADMINISTRAÇÃO
          */
-        const Form = {
-            data: { plan: 'padrao', price: 3, image: null },
-
-            selectPlan: (plan, price) => {
-                Form.data.plan = plan;
-                Form.data.price = price;
-                
-                document.querySelectorAll('.plan-item').forEach(el => el.classList.remove('selected'));
-                event.currentTarget.classList.add('selected');
-                
-                setTimeout(() => App.changeStep(2), 300);
-            },
-
-            validateAndAdvance: async () => {
-                const title = document.getElementById('inpTitle').value;
-                const price = document.getElementById('inpPrice').value;
-                const desc = document.getElementById('inpDesc').value;
-                const phone = document.getElementById('inpPhone').value;
-                const fileInput = document.getElementById('inpImg');
-
-                if(!title || !price || !phone) return Utils.showToast("Preencha campos obrigatórios!");
-
-                // Otimizando imagem antes de avançar
-                if(fileInput.files[0]) {
-                    Utils.showToast("Processando imagem...", 2000);
-                    Form.data.image = await Utils.compressImage(fileInput.files[0]);
-                } else {
-                    Form.data.image = "https://placehold.co/600x400?text=Sem+Foto";
-                }
-
-                Form.data.title = title;
-                Form.data.prodPrice = price;
-                Form.data.desc = desc;
-                Form.data.phone = phone.replace(/\D/g,'');
-
-                document.getElementById('pixValue').innerText = Utils.formatCurrency(Form.data.price);
-                App.changeStep(3);
-            },
-
-            copyPix: () => {
-                navigator.clipboard.writeText(Config.pixKey);
-                Utils.showToast("Chave Pix copiada!");
-            },
-
-            submit: async () => {
-                const btn = document.getElementById('btnPublish');
-                btn.innerHTML = '<div class="loading-spinner"></div> Publicando...';
-                
-                const payload = {
-                    ...Form.data,
-                    createdAt: Date.now(),
-                    views: 0,
-                    active: true
-                };
-
-                const success = await Db.create(payload);
-                
-                if(success) {
-                    Utils.showToast("Sucesso! Anúncio Publicado.");
-                    App.closeModal();
-                    App.init(); // Reload
-                } else {
-                    Utils.showToast("Erro na publicação. Tente novamente.");
-                }
-                btn.innerHTML = 'Confirmar PIX e Publicar';
-            }
-        };
-
-        /**
-         * APLICAÇÃO PRINCIPAL (CONTROLLER)
-         */
-        const App = {
-            init: async () => {
-                document.getElementById('adGrid').innerHTML = '<div class="loading-spinner"></div> Buscando oportunidades...';
-                
-                let ads = await Db.getAll();
-                const now = Date.now();
-                let cleanCount = 0;
-
-                // 1. Faxina e Filtro
-                const activeAds = [];
-                for(let ad of ads) {
-                    // Verifica expiração (7 dias)
-                    if(Utils.dateDiffInDays(now, ad.createdAt) >= Config.expireDays) {
-                        Db.delete(ad.id); // Deleta silenciosamente do banco
-                        cleanCount++;
-                    } else {
-                        activeAds.push(ad);
-                    }
-                }
-                
-                if(cleanCount > 0) console.log(`Faxineiro Virtual removeu ${cleanCount} anúncios expirados.`);
-
-                // 2. Ordenação (Vip > Comece > Padrão > Data)
-                const weights = { vip: 3, comece: 2, padrao: 1 };
-                activeAds.sort((a,b) => {
-                    const weightDiff = weights[b.plan] - weights[a.plan];
-                    if(weightDiff !== 0) return weightDiff;
-                    return b.createdAt - a.createdAt; // Mais recentes primeiro no mesmo plano
-                });
-
-                // 3. Renderização
-                App.renderAds(activeAds);
-                document.getElementById('statsCounter').innerText = `${activeAds.length} anúncios ativos em tempo real`;
-            },
-
-            renderAds: (ads) => {
-                const grid = document.getElementById('adGrid');
-                grid.innerHTML = "";
-
-                if(ads.length === 0) {
-                    grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#888;">Nenhum anúncio disponível no momento.</p>';
-                    return;
-                }
-
-                ads.forEach(ad => {
-                    const daysLeft = Config.expireDays - Utils.dateDiffInDays(Date.now(), ad.createdAt);
-                    const whatsappUrl = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no Super Classificados!`;
-                    
-                    const badgeTitle = ad.plan === 'vip' ? '💎 Destaque VIP' : (ad.plan === 'comece' ? '🚀 Oportunidade' : '');
-                    
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.setAttribute('data-plan', ad.plan);
-                    card.innerHTML = `
-                        <div class="badge-plan">${badgeTitle}</div>
-                        <button class="share-btn" onclick="App.shareAd('${ad.title}', '${ad.desc}')">📤</button>
-                        <div class="card-img-wrapper">
-                            <img src="${ad.image}" class="card-img" alt="${ad.title}" loading="lazy">
-                        </div>
-                        <div class="card-body">
-                            <div class="card-meta">
-                                <span>👁 ${ad.views || 0} views</span>
-                                <span>⏳ ${daysLeft} dias restantes</span>
-                            </div>
-                            <h3 class="card-title">${ad.title}</h3>
-                            <div class="card-price">${Utils.formatCurrency(ad.prodPrice)}</div>
-                            <p class="card-desc">${ad.desc}</p>
-                            <a href="${whatsappUrl}" target="_blank" class="btn-wpp" onclick="Db.incrementView('${ad.id}', ${ad.views||0})">
-                                Chamar no WhatsApp
-                            </a>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            },
-
-            shareAd: (title, text) => {
-                if (navigator.share) {
-                    navigator.share({ title: 'Super Classificados DF', text: `${title} - ${text}`, url: window.location.href })
-                    .catch((error) => console.log('Erro ao compartilhar', error));
-                } else {
-                    Utils.showToast("Link copiado para a área de transferência!");
-                }
-            },
-
-            openModal: () => {
-                document.getElementById('mainModal').style.display = 'flex';
-                App.changeStep(1);
-                // Reset inputs logic here if needed
+        const Admin = {
+            isLogged: () => localStorage.getItem('sc_admin') === 'true',
+            
+            loginPrompt: () => {
+                const pass = prompt("Acesso Admin. Senha:");
+                if(pass === Config.adminPass) {
+                    localStorage.setItem('sc_admin', 'true');
+                    location.reload();
+                } else if(pass) { alert("Senha Incorreta"); }
             },
             
-            closeModal: () => {
-                document.getElementById('mainModal').style.display = 'none';
+            logout: () => {
+                localStorage.removeItem('sc_admin');
+                location.reload();
             },
 
-            changeStep: (step) => {
-                document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-                document.getElementById(`step${step}`).classList.add('active');
+            check: () => {
+                if(Admin.isLogged()) {
+                    Utils.$('adminToolbar').style.display = 'flex';
+                    Utils.$('adminBadge').style.display = 'inline-block';
+                    Utils.$('pendingSection').style.display = 'block';
+                }
+            },
+
+            // Ações
+            approve: async (id) => {
+                if(!confirm("Pix confirmado? Liberar anúncio?")) return;
+                await Db.updateStatus(id, 'active');
+                App.load();
+                Utils.showToast("Anúncio Aprovado!");
+            },
+            
+            reject: async (id) => {
+                if(!confirm("Excluir este anúncio permanentemente?")) return;
+                await Db.remove(id);
+                App.load();
+                Utils.showToast("Anúncio Excluído.");
+            },
+            
+            edit: (id) => {
+                // Feature simples de edição: pega o ID e joga no form? 
+                // Para V3 MVP, vamos alertar. Melhor implementação seria carregar no modal.
+                const price = prompt("Novo Preço:");
+                if(price) {
+                     Db.updateData(id, {prodPrice: price}).then(() => App.load());
+                }
             }
         };
 
-        // Iniciar App
-        window.addEventListener('load', App.init);
+        /**
+         * APP LÓGICA E UI
+         */
+        const App = {
+            currentFilter: 'todos',
+            
+            init: () => {
+                Admin.check();
+                App.renderCats();
+                App.load();
+            },
+
+            renderCats: () => {
+                const el = Utils.$('categoryList');
+                el.innerHTML = Config.categories.map(c => 
+                    `<span class="cat-chip ${c.id==='todos'?'active':''}" onclick="App.filter('${c.id}', this)">${c.name}</span>`
+                ).join('');
+            },
+
+            filter: (catId, domEl) => {
+                App.currentFilter = catId;
+                document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+                domEl.classList.add('active');
+                Utils.$('currentCatTitle').innerText = Config.categories.find(c=>c.id===catId).name;
+                App.load();
+            },
+
+            load: async () => {
+                const list = await Db.list();
+                const now = Date.now();
+                const validDays = 7 * 24 * 60 * 60 * 1000;
+                
+                // Separação
+                let pending = [];
+                let active = [];
+
+                list.forEach(ad => {
+                    const isExpired = (now - ad.createdAt) > validDays;
+                    
+                    // Auto Faxina de expirados
+                    if(isExpired) { Db.remove(ad.id); return; }
+
+                    if(ad.status === 'pending') {
+                        pending.push(ad);
+                    } else if (ad.status === 'active') {
+                        // Filtrar por Categoria
+                        if(App.currentFilter === 'todos' || ad.category === App.currentFilter) {
+                            active.push(ad);
+                        }
+                    }
+                });
+
+                // Ordenar: VIP > Comece > Normal > Data
+                const w = {vip:3, comece:2, padrao:1};
+                active.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
+                
+                // Renderizar Públicos
+                const pubEl = Utils.$('gridPublic');
+                pubEl.innerHTML = '';
+                if(active.length === 0) pubEl.innerHTML = '<div style="padding:2rem; text-align:center; color:#999; grid-column:1/-1;">Nenhum anúncio nesta categoria.</div>';
+                
+                active.forEach(ad => pubEl.appendChild(App.createCard(ad)));
+
+                // Renderizar Pendentes (SÓ SE ADMIN)
+                if(Admin.isLogged()) {
+                    const pendEl = Utils.$('gridPending');
+                    pendEl.innerHTML = '';
+                    if(pending.length === 0) pendEl.innerHTML = '<p style="padding:1rem;">Nada pendente.</p>';
+                    pending.forEach(ad => pendEl.appendChild(App.createCard(ad, true)));
+                    Utils.$('adsCount').innerText = `${active.length} ativos • ${pending.length} aguardando aprovação`;
+                }
+            },
+
+            createCard: (ad, isAdminView = false) => {
+                const d = document.createElement('div');
+                d.className = `card ${isAdminView ? 'pending' : ''}`;
+                d.setAttribute('data-plan', ad.plan);
+                
+                const img = ad.image ? ad.image : 'https://placehold.co/400x300?text=Sem+Foto';
+                const whatsappMsg = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no site.`;
+                
+                let adminHtml = '';
+                if(Admin.isLogged()) {
+                    adminHtml = `
+                    <div class="admin-controls">
+                        ${isAdminView ? `<button class="btn-ctrl btn-approve" onclick="Admin.approve('${ad.id}')">✅ Validar Pix</button>` : ''}
+                        <button class="btn-ctrl btn-edit" onclick="Admin.edit('${ad.id}')">✏️ Preço</button>
+                        <button class="btn-ctrl btn-delete" onclick="Admin.reject('${ad.id}')">🗑️ Excluir</button>
+                    </div>`;
+                }
+
+                d.innerHTML = `
+                    <div class="status-strip">AGUARDANDO APROVAÇÃO</div>
+                    <div class="plan-tag">${ad.plan}</div>
+                    <div class="card-img-box">
+                        <img src="${img}" class="card-img" loading="lazy">
+                        <span class="cat-tag">${Config.categories.find(c=>c.id===ad.category)?.name || 'Outros'}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-price">${Utils.formatMoney(ad.prodPrice)}</div>
+                        <h3 class="card-title">${ad.title}</h3>
+                        ${!isAdminView ? `<a href="${whatsappMsg}" target="_blank" class="btn-wpp">Conversar</a>` : ''}
+                        ${adminHtml}
+                    </div>
+                `;
+                return d;
+            }
+        };
+
+        /**
+         * FORMULÁRIO E MODAL
+         */
+        const Form = {
+            data: {},
+            
+            updatePrice: () => {
+                const map = { padrao: '3,00', comece: '6,00', vip: '10,00' };
+                Utils.$('finalPrice').innerText = "R$ " + map[Utils.$('inpPlan').value];
+            },
+
+            goStep2: () => {
+                if(!Utils.$('inpTitle').value) return alert("Digite o título!");
+                Utils.$('step1').style.display='none'; Utils.$('step2').style.display='block';
+            },
+            goStep1: () => {
+                Utils.$('step2').style.display='none'; Utils.$('step1').style.display='block';
+            },
+
+            submitAd: async () => {
+                const file = Utils.$('inpImg').files[0];
+                let imgData = '';
+                
+                if(file) {
+                    Utils.showToast("Comprimindo imagem...");
+                    imgData = await Utils.compressImage(file);
+                }
+
+                const payload = {
+                    title: Utils.$('inpTitle').value,
+                    prodPrice: Utils.$('inpPrice').value,
+                    desc: Utils.$('inpDesc').value,
+                    phone: Utils.$('inpPhone').value.replace(/\D/g,''),
+                    category: Utils.$('inpCat').value,
+                    plan: Utils.$('inpPlan').value,
+                    image: imgData,
+                    status: 'pending' // VAI PRA FILA DE APROVAÇÃO
+                };
+
+                Utils.showToast("Enviando...");
+                const newId = await Db.create(payload);
+
+                // Tela Sucesso / Cobrança
+                Utils.$('step2').style.display = 'none';
+                Utils.$('stepSuccess').style.display = 'block';
+                Utils.$('newAdId').innerText = newId.slice(-5); // Ultimos caracteres
+                
+                const zapMsg = `Olá Admin! Fiz o anúncio "${payload.title}" (ID: ${newId.slice(-5)}). Segue meu comprovante PIX de R$ ${Utils.$('finalPrice').innerText} para liberar a publicação.`;
+                Utils.$('btnSendReceipt').onclick = () => window.open(`https://wa.me/5561999487649?text=${encodeURIComponent(zapMsg)}`, '_blank');
+            }
+        };
+
+        const Modal = {
+            open: () => { 
+                Utils.$('mainModal').style.display = 'flex'; 
+                Utils.$('step1').style.display = 'block';
+                Utils.$('step2').style.display = 'none';
+                Utils.$('stepSuccess').style.display = 'none';
+                Utils.$('adForm').reset();
+            },
+            close: () => Utils.$('mainModal').style.display = 'none'
+        };
+
+        // Iniciar
+        App.init();
 
     </script>
 </body>
