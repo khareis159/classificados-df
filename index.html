@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Classificados SAD/DF | Portal V3</title>
+    <title>Super Classificados SAD/BR | Portal V3</title>
     
     <!-- Fonte e Ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -169,10 +169,11 @@
 
     <header>
         <div class="brand">
-            <h1>Super <span>Classificados SAD/DF</span> <span class="admin-badge" id="adminBadge">Admin</span></h1>
+            <h1>Super <span>Classificados SAD/BR</span> <span class="admin-badge" id="adminBadge">Admin</span></h1>
         </div>
         <button class="cat-chip active" style="background: var(--primary); color:white;" onclick="Modal.open()">+ Publicar</button>
     </header>
+
     <!-- CATEGORIAS -->
     <div class="categories-wrapper" id="categoryList">
         <!-- Renderizado via JS -->
@@ -202,7 +203,7 @@
 
     <footer>
 
-        <p>Super Classificados SAD/DF © 2025<br>Termos de Uso • Segurança</p>
+        <p>Super Classificados SAD/BR © 2025<br>Termos de Uso • Segurança</p>
 
 
         <p style="margin-top:10px; font-size:0.75rem; color:#ccc;">Developed by <strong>Carlos Alberto Reis</strong> <span class="admin-login-link" onclick="Admin.loginPrompt()">🔒</span></p>
@@ -505,18 +506,19 @@
                 d.setAttribute('data-plan', ad.plan);
                 
                 const img = ad.image ? ad.image : 'https://placehold.co/400x300?text=Sem+Foto';
-                const whatsappMsg = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no site.`;
+                const whatsappMsg = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no Super Classificados SAD/BR.`;
                 
                 let adminHtml = '';
                 if(Admin.isLogged()) {
                     adminHtml = `
                     <div class="admin-controls">
-                        ${isAdminView ? `<button class="btn-ctrl btn-approve" onclick="Admin.approve('${ad.id}')">✅ Validar Pix</button>` : ''}
-                        <button class="btn-ctrl btn-edit" onclick="Admin.edit('${ad.id}')">✏️ Preço</button>
+                        ${isAdminView ? `<button class="btn-ctrl btn-approve" onclick="Admin.approve('${ad.id}')">✅ Aceitar</button>` : ''}
+                        <button class="btn-ctrl btn-edit" onclick="Admin.edit('${ad.id}')">✏️ Editar</button>
                         <button class="btn-ctrl btn-delete" onclick="Admin.reject('${ad.id}')">🗑️ Excluir</button>
                     </div>`;
                 }
 
+                // AQUI ESTÁ A CORREÇÃO DA DESCRIÇÃO
                 d.innerHTML = `
                     <div class="status-strip">AGUARDANDO APROVAÇÃO</div>
                     <div class="plan-tag">${ad.plan}</div>
@@ -527,7 +529,11 @@
                     <div class="card-body">
                         <div class="card-price">${Utils.formatMoney(ad.prodPrice)}</div>
                         <h3 class="card-title">${ad.title}</h3>
-                        ${!isAdminView ? `<a href="${whatsappMsg}" target="_blank" class="btn-wpp">Conversar</a>` : ''}
+                        
+                        <!-- NOVA LINHA: DESCRIÇÃO APARECENDO -->
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:12px; line-height:1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${ad.desc}</p>
+                        
+                        ${!isAdminView ? `<a href="${whatsappMsg}" target="_blank" class="btn-wpp">Conversar no WhatsApp</a>` : ''}
                         ${adminHtml}
                     </div>
                 `;
@@ -554,35 +560,54 @@
                 Utils.$('step2').style.display='none'; Utils.$('step1').style.display='block';
             },
 
-            submitAd: async () => {
+submitAd: async () => {
                 const file = Utils.$('inpImg').files[0];
                 let imgData = '';
                 
+                // Mapa de valores fixos para garantir que não dê R$ 0,00
+                const planMap = {
+                    'padrao': { name: 'Padrão', val: 3.00 },
+                    'comece': { name: 'Comece', val: 6.00 },
+                    'vip': { name: 'VIP', val: 10.00 }
+                };
+
                 if(file) {
-                    Utils.showToast("Comprimindo imagem...");
+                    Utils.showToast("Processando imagem...");
                     imgData = await Utils.compressImage(file);
                 }
 
+                // Pega os dados atuais
+                const title = Utils.$('inpTitle').value;
+                const planKey = Utils.$('inpPlan').value; 
+                const selectedPlanInfo = planMap[planKey] || planMap['padrao'];
+                const priceFormatted = Utils.formatMoney(selectedPlanInfo.val);
+
+                if(!title) return alert("Por favor, preencha o título.");
+
                 const payload = {
-                    title: Utils.$('inpTitle').value,
+                    title: title,
                     prodPrice: Utils.$('inpPrice').value,
                     desc: Utils.$('inpDesc').value,
                     phone: Utils.$('inpPhone').value.replace(/\D/g,''),
                     category: Utils.$('inpCat').value,
-                    plan: Utils.$('inpPlan').value,
+                    plan: planKey,
                     image: imgData,
-                    status: 'pending' // VAI PRA FILA DE APROVAÇÃO
+                    status: 'pending'
                 };
 
-                Utils.showToast("Enviando...");
+                Utils.showToast("Enviando anúncio...");
                 const newId = await Db.create(payload);
 
-                // Tela Sucesso / Cobrança
+                // ATUALIZA A TELA DE PAGAMENTO COM VALOR REAL
                 Utils.$('step2').style.display = 'none';
                 Utils.$('stepSuccess').style.display = 'block';
-                Utils.$('newAdId').innerText = newId.slice(-5); // Ultimos caracteres
+                Utils.$('newAdId').innerText = newId.slice(-5);
+                Utils.$('finalPrice').innerText = priceFormatted; // Aqui corrige o R$ 0,00 do print
                 
-                const zapMsg = `Olá Admin! Fiz o anúncio "${payload.title}" (ID: ${newId.slice(-5)}). Segue meu comprovante PIX de R$ ${Utils.$('finalPrice').innerText} para liberar a publicação.`;
+                // MENSAGEM DO ZAP CORRIGIDA
+                // Ex: Olá Admin! Fiz o anúncio (Padrão [R$ 3,00]) "Fusca" (ID: 123). Segue pix...
+                const zapMsg = `Olá Admin! Fiz o anúncio (${selectedPlanInfo.name} [${priceFormatted}]) "${payload.title}" (ID: ${newId.slice(-5)}). Segue meu comprovante PIX de ${priceFormatted} para liberar a publicação.`;
+                
                 Utils.$('btnSendReceipt').onclick = () => window.open(`https://wa.me/5561999487649?text=${encodeURIComponent(zapMsg)}`, '_blank');
             }
         };
