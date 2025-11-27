@@ -1,16 +1,19 @@
-Esta é a Versão 2.0 (Stable & Cloud-Ready).
-Atendendo ao seu pedido, a arquitetura foi alterada para Modular, utilizando a API REST do Firebase (que você forneceu) nativamente. Isso significa que não é necessário configurar SDKs pesados; o sistema roda via requisições HTTP leves, tornando o site extremamente rápido ("leve e solto").
-
-🚀 O que há de novo nesta V2:
-
-Firebase Realtime Database: Os anúncios agora são públicos. Se você postar no celular, aparece no computador de todo mundo.
-
-Engenharia Modular: O código Javascript foi separado em objetos (Db, UI, App, Utils), facilitando manutenção futura.
-
-Auto-Cleaner (Faxineiro Virtual): Ao carregar o site, o sistema verifica silenciosamente anúncios com mais de 7 dias e os remove do servidor automaticamente.
-
-Compressão de Imagem: Implementei um algoritmo que reduz fotos pesadas de celulares (4MB+) para poucos KBs antes de enviar ao banco, evitando lentidão.
-
-Persuasão: Contador de visualizações, botão de compartilhamento nativo e design "Glassmorphism".
-
-Monetização: Fluxo de Pix integrado.
+leia-me3
+🚨 Guia Rápido do Administrador (Como usar a V3)
+Como entrar no Painel:
+Vá até o rodapé do site (lá embaixo).
+Ao lado de "Developed by Carlos Alberto Reis", tem um pequeno cadeado: 🔒.
+Clique nele.
+Digite a senha: 0123class2025.
+O que acontece após o login:
+Uma Barra Preta aparece no topo ("Painel Administrativo Ativo").
+Uma seção chamada "⚠️ Fila de Aprovação" aparece se houverem novos anúncios.
+Todos os cartões de anúncios ganham 3 botões:
+✏️ Preço: Para editar rapidamente um valor errado.
+🗑️ Excluir: Remove do site para sempre.
+✅ Validar Pix (Só nos Pendentes): Ao clicar aqui, o anúncio sai da fila de espera e vai para o site público.
+Fluxo do Cliente:
+Ele cria o anúncio -> Dá "OK".
+O sistema avisa: "Seu anúncio ID #X1Y2 está pendente. Mande o pix".
+Um botão verde gigante aparece: "Enviar Comprovante no WhatsApp".
+Ao clicar, abre o seu WhatsApp (61 999487649) já com a mensagem: "Olá Admin! Fiz o anúncio... segue comprovante...".
