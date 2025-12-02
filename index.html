@@ -1,314 +1,294 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Super Classificados SAD/BR | Portal V3</title>
+    <title>Super Classificados SAD/BR | Top V4</title>
     
-    <!-- Fonte e Ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Cores e Estilo */
+            /* Vendas */
             --primary: #2563eb;
             --primary-dark: #1e40af;
             --secondary: #64748b;
+            --bg-body: #f8fafc;
+            
+            /* Status */
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --vip: #FDB931;
             
-            --bg-body: #f8fafc;
-            --surface: #ffffff;
-            --text-main: #1f2937;
-            
-            --admin-bar: #1f2937;
+            /* Planos */
+            --vip: #FFD700;
+            --commerce: #8b5cf6; /* Roxo para Commerce */
+            --padrao: #e2e8f0;
+
+            /* Doações */
+            --heart: #e11d48;
+            --heart-bg: #fff1f2;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 80px; }
+        body { background-color: var(--bg-body); color: #1f2937; padding-bottom: 80px; }
 
         /* HEADER */
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 50;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 1rem 5%;
-            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
         }
-        
         .brand h1 { font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
-        .brand span { color: var(--text-main); }
-        .admin-badge { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; text-transform: uppercase; margin-left: 5px; display: none; vertical-align: middle;}
-
-        /* ADMIN BAR (SÓ PARA VC) */
+        .admin-badge { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; margin-left: 5px; vertical-align: middle; display: none; }
+        
         #adminToolbar {
-            display: none; background: var(--admin-bar); color: white;
-            padding: 10px 5%; font-size: 0.85rem; justify-content: space-between; align-items: center;
+            display: none; background: #1f2937; color: white; padding: 10px 5%;
+            font-size: 0.85rem; justify-content: space-between; align-items: center;
         }
-        .btn-admin-logout { background: #4b5563; border: none; color: white; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
-        /* HERO & FILTERS */
-        .categories-wrapper { padding: 1rem 5%; background: white; border-bottom: 1px solid #eee; overflow-x: auto; white-space: nowrap; -ms-overflow-style: none; scrollbar-width: none; }
-        .categories-wrapper::-webkit-scrollbar { display: none; }
-        
-        .cat-chip {
-            display: inline-block; padding: 8px 16px; margin-right: 8px;
-            background: #f1f5f9; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
-            color: var(--secondary); cursor: pointer; transition: 0.2s; border: 1px solid transparent;
-        }
-        .cat-chip:hover { background: #e2e8f0; }
-        .cat-chip.active { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(37,99,235,0.2); }
-
-        /* GRID */
+        /* GRID SYSTEM */
         .container { max-width: 1280px; margin: 0 auto; padding: 2rem 5%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
         
-        .section-title { font-size: 1.2rem; margin: 2rem 0 1rem 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
-        }
+        /* MODULO DE ANÚNCIOS (VENDAS) */
+        .section-header { margin: 2rem 0 1rem; display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 
-        /* CARD V3 */
+        .filters-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .filter-pill { background: white; border: 1px solid #e2e8f0; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* CARDS GERAIS */
         .card {
-            background: var(--surface); border-radius: 12px; overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.3s;
-            position: relative; display: flex; flex-direction: column;
-            border: 1px solid #eee;
+            background: white; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;
+            position: relative; border: 1px solid #f1f5f9; display: flex; flex-direction: column;
         }
-
-        /* CARD STATUS ADMIN */
-        .card.pending { border: 2px dashed var(--danger); opacity: 0.9; }
-        .status-strip {
-            background: var(--danger); color: white; text-align: center; font-size: 0.75rem; font-weight: bold; padding: 5px;
-            display: none; /* Só aparece se for pendente */
-        }
-        .card.pending .status-strip { display: block; }
-
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+        .card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+        .card-price { font-size: 1.25rem; font-weight: 800; color: #111; margin-bottom: 4px; }
+        .card-title { font-size: 1rem; color: #4b5563; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+        .card-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         
+        /* PLANS STYLES */
         .card[data-plan="vip"] { border: 2px solid var(--vip); }
-        .card[data-plan="comece"] { border: 1px solid var(--success); }
-
-        .card-img-box { position: relative; height: 200px; background: #eee; overflow: hidden; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        .card[data-plan="commerce"] { border: 1px solid var(--commerce); }
         
-        .cat-tag { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; }
-        .plan-tag { position: absolute; top: 10px; left: 10px; background: var(--vip); color: #000; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .card[data-plan="vip"] .plan-tag { display: block; background: linear-gradient(135deg, #FFD700, #FDB931); }
-        .card[data-plan="comece"] .plan-tag { display: block; background: var(--success); color: white; }
+        .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .badge-vip { background: linear-gradient(135deg, #FFD700, #ffb300); color: black; }
+        .badge-commerce { background: var(--commerce); color: white; }
 
-        .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
-        .card-price { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.2rem; }
-        .card-title { font-size: 1rem; font-weight: 600; color: #4b5563; margin-bottom: 0.8rem; line-height: 1.4; }
+        /* =========================================
+           MÓDULO DE DOAÇÕES (SOLIDARIEDADE)
+           ========================================= */
+        .donation-section {
+            background: var(--heart-bg);
+            border-top: 1px solid #fecdd3;
+            border-bottom: 1px solid #fecdd3;
+            padding: 3rem 0; margin-top: 4rem;
+        }
+        .donation-header { text-align: center; margin-bottom: 2rem; }
+        .donation-header h2 { color: var(--heart); font-size: 1.8rem; }
+        .donation-header p { color: #881337; font-size: 0.95rem; }
         
-        .admin-controls {
-            margin-top: auto; padding-top: 1rem; border-top: 1px solid #eee;
-            display: flex; gap: 5px; justify-content: space-between;
+        .card-donation { border: 1px solid #fecdd3; }
+        .card-donation .badge { background: var(--heart); color: white; }
+        .donation-type {
+            display: inline-block; background: #fff0f5; color: var(--heart);
+            font-size: 0.75rem; font-weight: bold; padding: 2px 8px; border-radius: 4px;
+            margin-bottom: 5px; border: 1px solid #fecdd3;
         }
-        .btn-ctrl { flex: 1; border: none; padding: 8px; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-        .btn-approve { background: var(--success); }
-        .btn-edit { background: var(--primary); }
-        .btn-delete { background: var(--danger); }
-        .btn-wpp { width: 100%; background: #25D366; color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: bold; margin-top: auto; display: block; }
+
+        /* UTILS */
+        .btn-wpp { background: #25D366; color: white; display: block; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: auto; }
+        .admin-controls { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 5px; }
+        .btn-admin { flex: 1; border: none; padding: 6px; border-radius: 4px; color: white; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+
+        /* FORM MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 95%; max-width: 500px; padding: 1.5rem; border-radius: 16px; max-height: 90vh; overflow-y: auto; }
+        .form-control { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+        .step { display: none; } .step.active { display: block; }
         
-        /* FAB */
-        .fab {
-            position: fixed; bottom: 25px; right: 25px;
-            width: 60px; height: 60px; border-radius: 50%;
-            background: var(--primary); color: white;
-            font-size: 28px; border: none; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-            cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100;
-        }
+        .radio-plan { display: flex; gap: 10px; margin-bottom: 15px; }
+        .plan-opt { flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 8px; text-align: center; cursor: pointer; opacity: 0.6; }
+        .plan-opt.selected { border-color: var(--primary); opacity: 1; background: #eff6ff; }
 
-        /* FOOTER & COPYRIGHT */
-        footer {
-            background: white; border-top: 1px solid #eee; padding: 2rem; text-align: center; color: var(--secondary); font-size: 0.8rem; margin-top: 3rem;
-        }
-        .admin-login-link { cursor: pointer; color: #ddd; margin-left: 10px; text-decoration: none; }
-        .admin-login-link:hover { color: var(--secondary); }
+        /* ADMIN STATUS */
+        .card.pending { border: 2px dashed var(--danger); opacity: 0.8; }
+        .card.pending::before { content: "PENDENTE ADMIN"; display: block; background: var(--danger); color: white; text-align: center; font-size: 0.7rem; font-weight: bold; padding: 4px; }
 
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-            z-index: 200; display: none; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; width: 95%; max-width: 500px;
-            max-height: 90vh; overflow-y: auto; border-radius: 16px;
-            padding: 1.5rem; position: relative;
-        }
-        
-        /* Forms */
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--secondary); }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
-        select.form-control { background: white; }
-
-        /* LOADING */
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Toast */
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 30px; z-index: 300; font-size: 0.9rem; animation: fadein 0.3s; }
+        
+        footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <!-- NOTIFICAÇÕES -->
-    <div id="toast" style="display:none;" class="toast">Mensagem</div>
-
-    <!-- BARRA ADMIN -->
+    <!-- PAINEL ADMIN FLUTUANTE -->
     <div id="adminToolbar">
-        <span>🔒 Painel Administrativo Ativo</span>
-        <button class="btn-admin-logout" onclick="Admin.logout()">Sair</button>
+        <span>🔒 Admin Logado</span>
+        <button onclick="Admin.logout()" style="background:#ef4444; border:none; padding:4px 10px; border-radius:4px; color:white;">Sair</button>
     </div>
 
+    <!-- HEADER -->
     <header>
         <div class="brand">
-            <h1>Super <span>Classificados SAD/BR</span> <span class="admin-badge" id="adminBadge">Admin</span></h1>
+            <h1>Super <span>Classificados SAD/BR</span> <span class="admin-badge" id="adminBadge">ADMIN</span></h1>
         </div>
-        <button class="cat-chip active" style="background: var(--primary); color:white;" onclick="Modal.open()">+ Publicar</button>
+        <button onclick="Modal.open()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">+ Anunciar</button>
     </header>
 
-    <!-- CATEGORIAS -->
-    <div class="categories-wrapper" id="categoryList">
-        <!-- Renderizado via JS -->
-    </div>
-
+    <!-- ÁREA DE VENDAS -->
     <div class="container">
-        <!-- ADMIN: PENDENTES -->
-        <div id="pendingSection" style="display:none;">
-            <div class="section-title" style="color:var(--danger)">
-                ⚠️ Fila de Aprovação (Somente Admin)
-            </div>
-            <div id="gridPending" class="grid" style="margin-bottom: 3rem;"></div>
+        
+        <div id="pendingContainer" style="display:none; margin-bottom:2rem; background:#fff1f2; padding:1rem; border-radius:12px; border:1px solid #fecdd3;">
+            <h3 style="color:var(--danger); margin-bottom:1rem;">⚠️ Fila de Aprovação (Admin)</h3>
+            <div id="gridPending" class="grid"></div>
         </div>
 
-        <!-- PUBLICO -->
-        <div class="section-title">
-            <span id="currentCatTitle">Últimos Anúncios</span>
-            <small style="font-weight:400; font-size:0.8rem; color:#999;" id="adsCount"></small>
+        <div class="section-header">
+            <div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small></div>
         </div>
         
-        <div id="gridPublic" class="grid">
+        <!-- FILTROS (Vendas) -->
+        <div class="filters-scroll" id="filtersList">
+            <!-- JS Gera -->
+        </div>
+        <br>
+
+        <div id="gridSales" class="grid">
             <div class="spinner"></div>
         </div>
     </div>
 
-    <button class="fab" onclick="Modal.open()">+</button>
+    <!-- MÓDULO DE DOAÇÕES INDEPENDENTE -->
+    <div class="donation-section">
+        <div class="container">
+            <div class="donation-header">
+                <h2>❤️ Espaço Solidário</h2>
+                <p>Opcional Extra: Doações de Objetos, Valores e Adoção de Animais</p>
+                <button onclick="Modal.openDonation()" style="margin-top:10px; background:white; color:var(--heart); border:1px solid var(--heart); padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">Quero Doar Algo</button>
+            </div>
+            
+            <div id="gridDonations" class="grid">
+                <!-- Anúncios de Doação aqui -->
+            </div>
+        </div>
+    </div>
 
     <footer>
-
-        <p>Super Classificados SAD/BR © 2025<br>Termos de Uso • Segurança</p>
-
-
-        <p style="margin-top:10px; font-size:0.75rem; color:#ccc;">Developed by <strong>Carlos Alberto Reis</strong> <span class="admin-login-link" onclick="Admin.loginPrompt()">🔒</span></p>
+        <p>Super Classificados SAD/BR © 2025 • Top Full Version</p>
+        <p style="margin-top:5px; cursor:pointer;" onclick="Admin.promptLogin()">Developed by <strong>Carlos Alberto Reis</strong> 🔒</p>
     </footer>
 
-    <!-- MODAL PRINCIPAL -->
-    <div id="mainModal" class="modal-overlay">
+    <!-- MODAL DE CRIAÇÃO -->
+    <div id="modalMain" class="modal-overlay">
         <div class="modal-content">
-            <span onclick="Modal.close()" style="position:absolute; right:15px; top:10px; font-size:1.5rem; cursor:pointer; color:#999">&times;</span>
-            <h2 id="modalTitle" style="margin-bottom:15px;">Novo Anúncio</h2>
-
-            <form id="adForm" onsubmit="return false;">
-                <!-- ETAPA 1 -->
-                <div id="step1">
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <select id="inpCat" class="form-control">
-                            <option value="veiculos">🚗 Veículos</option>
-                            <option value="imoveis">🏡 Imóveis</option>
-                            <option value="eletronicos">📱 Eletrônicos</option>
-                            <option value="empregos">💼 Empregos</option>
-                            <option value="servicos">🛠 Serviços</option>
-                            <option value="usados">📦 Usados / Desapego</option>
-                            <option value="avisos">⚠️ Avisos / Comunicados</option>
-                            <option value="achados">🔎 Achados e Perdidos</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Destaque</label>
-                        <select id="inpPlan" class="form-control" onchange="Form.updatePrice()">
-                            <option value="padrao">Padrão (R$ 3,00)</option>
-                            <option value="comece">🚀 Comece (R$ 6,00)</option>
-                            <option value="vip">💎 VIP (R$ 10,00)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Título</label>
-                        <input type="text" id="inpTitle" class="form-control" placeholder="O que você está anunciando?">
-                    </div>
-                    
-                    <button class="form-control" style="background:var(--primary); color:white; font-weight:bold; margin-top:10px;" onclick="Form.goStep2()">Continuar</button>
-                </div>
-
-                <!-- ETAPA 2 -->
-                <div id="step2" style="display:none;">
-                    <div class="form-group">
-                        <label>Preço (R$)</label>
-                        <input type="number" id="inpPrice" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea id="inpDesc" class="form-control" rows="4"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>WhatsApp (DDD + Número)</label>
-                        <input type="tel" id="inpPhone" class="form-control" placeholder="61999999999">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Foto</label>
-                        <input type="file" id="inpImg" accept="image/*" class="form-control">
-                    </div>
-
-                    <button class="form-control" style="background:#ddd; color:#333; font-weight:bold;" onclick="Form.goStep1()">Voltar</button>
-                    <button class="form-control" style="background:var(--success); color:white; font-weight:bold; margin-top:10px;" onclick="Form.submitAd()">
-                        Finalizar e Pagar Pix
-                    </button>
-                </div>
-            </form>
-
-            <!-- TELA SUCESSO -->
-            <div id="stepSuccess" style="display:none; text-align:center;">
-                <div style="font-size:3rem;">📝</div>
-                <h3>Anúncio Recebido!</h3>
-                <p style="color:var(--secondary); font-size:0.9rem; margin:10px 0;">Seu anúncio ID #<span id="newAdId"></span> está <strong>PENDENTE</strong>.</p>
-                
-                <div style="background:#fff7ed; padding:15px; border-radius:10px; border:1px solid #fed7aa; margin:15px 0;">
-                    <p style="font-weight:bold; color:#9a3412;">PAGAMENTO PENDENTE</p>
-                    <p>Valor: <strong id="finalPrice">R$ 0,00</strong></p>
-                    <p style="font-size:0.8rem; margin-top:5px;">Chave Pix: <strong>61 999487649</strong></p>
-                </div>
-
-                <p style="font-size:0.85rem;">⚠️ Seu anúncio será revisado e publicado em até 10 horas após a confirmação do pagamento.</p>
-
-                <button id="btnSendReceipt" class="form-control" style="background:#25D366; color:white; font-weight:bold; margin-top:15px;">
-                    Enviar Comprovante no WhatsApp
-                </button>
+            <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                <h3 id="modalTitle">Novo Anúncio</h3>
+                <span onclick="Modal.close()" style="font-size:1.5rem; cursor:pointer;">&times;</span>
             </div>
 
+            <!-- PASSO 1: CATEGORIA -->
+            <div id="step1" class="step active">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">O que você deseja anunciar?</label>
+                <select id="inpCat" class="form-control">
+                    <option value="veiculos">🚗 Veículos</option>
+                    <option value="imoveis">🏡 Imóveis</option>
+                    <option value="eletronicos">📱 Eletrônicos</option>
+                    <option value="servicos">🛠 Serviços</option>
+                    <option value="empregos">💼 Empregos</option>
+                    <option value="diversos">📦 Diversos</option>
+                    <!-- "Opcional Extra" ativa modo doação via JS -->
+                    <option value="extra" style="color:#e11d48; font-weight:bold;">❤️ Opcional Extra (Doações)</option>
+                </select>
+
+                <div id="donationFields" style="display:none; background:#fff1f2; padding:10px; border-radius:8px; margin-bottom:10px;">
+                    <label style="color:#e11d48; font-weight:bold;">Tipo de Doação:</label>
+                    <select id="inpDonationType" class="form-control" style="border-color:#fda4af;">
+                        <option value="objeto">📦 Bens Materiais / Objetos</option>
+                        <option value="valor">💸 Ajuda Financeira</option>
+                        <option value="animal">🐾 Animais / Adoção</option>
+                    </select>
+                </div>
+
+                <div id="salesFields">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold;">Escolha o Plano:</label>
+                    <div class="radio-plan">
+                        <div class="plan-opt selected" onclick="Form.selectPlan('vip', 10, this)">
+                            <strong>VIP</strong><br>30 Dias<br><span style="color:#b45309">R$ 10,00</span>
+                        </div>
+                        <div class="plan-opt" onclick="Form.selectPlan('commerce', 6, this)">
+                            <strong>COMMERCE</strong><br>15 Dias<br><span style="color:var(--primary)">R$ 6,00</span>
+                        </div>
+                        <div class="plan-opt" onclick="Form.selectPlan('padrao', 3, this)">
+                            <strong>PADRÃO</strong><br>7 Dias<br><span style="color:#666">R$ 3,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="text" id="inpTitle" class="form-control" placeholder="Título do Anúncio">
+                <button onclick="Form.goNext()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">Continuar</button>
+            </div>
+
+            <!-- PASSO 2: DETALHES -->
+            <div id="step2" class="step">
+                <div id="priceBox">
+                    <label>Valor (R$)</label>
+                    <input type="number" id="inpPrice" class="form-control" placeholder="0,00">
+                </div>
+                
+                <label>Descrição</label>
+                <textarea id="inpDesc" rows="4" class="form-control" placeholder="Descreva os detalhes..."></textarea>
+                
+                <label>WhatsApp (Apenas números)</label>
+                <input type="tel" id="inpPhone" class="form-control" placeholder="61999999999">
+                
+                <label>Foto</label>
+                <input type="file" id="inpImg" accept="image/*" class="form-control">
+
+                <button onclick="Form.submit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">Finalizar Anúncio</button>
+                <button onclick="Modal.resetSteps()" style="width:100%; padding:10px; background:transparent; border:none; color:#666; margin-top:5px;">Voltar</button>
+            </div>
+            
+            <!-- PASSO SUCESSO -->
+            <div id="stepSuccess" class="step" style="text-align:center;">
+                <div style="font-size:3rem;">🎉</div>
+                <h3>Recebido!</h3>
+                <p>Seu anúncio ID <strong id="resId">...</strong> está aguardando aprovação.</p>
+                
+                <div id="pixBox" style="background:#f8fafc; padding:15px; margin:15px 0; border:1px solid #e2e8f0; border-radius:8px;">
+                    <p>Realize o PIX de: <strong id="resValue" style="font-size:1.2rem; color:var(--primary);"></strong></p>
+                    <p>Chave: <strong>61 999487649</strong></p>
+                </div>
+                
+                <button id="btnZap" class="btn-wpp">Enviar Comprovante e Publicar</button>
+            </div>
         </div>
     </div>
 
     <script>
         /**
-         * SISTEMA SUPER CLASSIFICADOS V3
-         * Configurações Gerais
+         * CONFIGURAÇÃO E DADOS
          */
         const Config = {
-            dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads",
-            adminPass: "0123class2025",
-            pixKey: "61999487649",
+            dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads", // Use seu DB
+            adminKey: "0123class2025",
+            pixKey: "61 999487649",
+            
+            // Regras de Planos (Dias e Preço)
+            plans: {
+                vip:      { name: 'VIP',      days: 30, price: 10.00 },
+                commerce: { name: 'COMMERCE', days: 15, price: 6.00 },
+                padrao:   { name: 'PADRÃO',   days: 7,  price: 3.00 },
+                doacao:   { name: 'DOAÇÃO',   days: 30, price: 0.00 } // Grátis
+            },
+            
             categories: [
                 {id:'todos', name:'Todos'},
                 {id:'veiculos', name:'Veículos'},
@@ -316,315 +296,307 @@
                 {id:'eletronicos', name:'Eletrônicos'},
                 {id:'empregos', name:'Empregos'},
                 {id:'servicos', name:'Serviços'},
-                {id:'usados', name:'Usados'},
-                {id:'avisos', name:'Avisos'},
-                {id:'achados', name:'Achados e Perdidos'}
+                {id:'diversos', name:'Diversos'}
             ]
         };
 
         const Utils = {
-            $: (id) => document.getElementById(id),
-            formatMoney: (v) => parseFloat(v).toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
-            showToast: (msg) => {
-                const t = Utils.$('toast'); t.innerText = msg; t.style.display='block';
-                setTimeout(()=>t.style.display='none', 3000);
-            },
-            compressImage: (file) => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.src = e.target.result;
-                        img.onload = () => {
-                            const cvs = document.createElement('canvas');
-                            const scale = 500 / img.width;
-                            cvs.width = 500; cvs.height = img.height * scale;
-                            cvs.getContext('2d').drawImage(img,0,0,cvs.width,cvs.height);
-                            resolve(cvs.toDataURL('image/jpeg', 0.6));
-                        }
+            $: id => document.getElementById(id),
+            currency: v => parseFloat(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
+            
+            // Compressão de Imagem
+            compress: file => new Promise(resolve => {
+                if(!file) resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = e => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const scale = 500 / img.width;
+                        canvas.width = 500; canvas.height = img.height * scale;
+                        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     }
-                });
-            }
+                }
+            })
         };
 
         /**
-         * CAMADA DE DADOS
+         * LÓGICA DE BANCO DE DADOS
          */
         const Db = {
-            list: async () => {
-                const r = await fetch(Config.dbUrl + ".json");
-                const d = await r.json();
-                return d ? Object.keys(d).map(k=>({...d[k], id:k})) : [];
+            getAll: async () => {
+                try {
+                    const r = await fetch(Config.dbUrl + ".json");
+                    const d = await r.json();
+                    return d ? Object.keys(d).map(k=>({...d[k], id:k})) : [];
+                } catch(e) { return []; }
             },
             create: async (data) => {
-                data.status = 'pending'; // PADRÃO: PENDENTE
                 data.createdAt = Date.now();
-                const r = await fetch(Config.dbUrl + ".json", {method:'POST', body:JSON.stringify(data)});
+                data.status = 'pending'; // Sempre começa pendente
+                const r = await fetch(Config.dbUrl + ".json", { method:'POST', body:JSON.stringify(data) });
                 const d = await r.json();
-                return d.name; // ID criado
+                return d.name;
             },
-            updateStatus: async (id, status) => {
-                await fetch(`${Config.dbUrl}/${id}/status.json`, {method:'PUT', body:JSON.stringify(status)});
-            },
-            updateData: async (id, newData) => {
-                 await fetch(`${Config.dbUrl}/${id}.json`, {method:'PATCH', body:JSON.stringify(newData)});
-            },
-            remove: async (id) => {
-                await fetch(`${Config.dbUrl}/${id}.json`, {method:'DELETE'});
-            }
+            update: async (id, data) => fetch(`${Config.dbUrl}/${id}.json`, {method:'PATCH', body:JSON.stringify(data)}),
+            delete: async (id) => fetch(`${Config.dbUrl}/${id}.json`, {method:'DELETE'})
         };
 
         /**
          * ADMINISTRAÇÃO
          */
         const Admin = {
-            isLogged: () => localStorage.getItem('sc_admin') === 'true',
-            
-            loginPrompt: () => {
-                const pass = prompt("Acesso Admin. Senha:");
-                if(pass === Config.adminPass) {
-                    localStorage.setItem('sc_admin', 'true');
-                    location.reload();
-                } else if(pass) { alert("Senha Incorreta"); }
-            },
-            
-            logout: () => {
-                localStorage.removeItem('sc_admin');
-                location.reload();
-            },
-
             check: () => {
-                if(Admin.isLogged()) {
-                    Utils.$('adminToolbar').style.display = 'flex';
-                    Utils.$('adminBadge').style.display = 'inline-block';
-                    Utils.$('pendingSection').style.display = 'block';
+                if(localStorage.getItem('sc_adm') === 'true') {
+                    Utils.$('adminToolbar').style.display='flex';
+                    Utils.$('adminBadge').style.display='inline-block';
+                    Utils.$('pendingContainer').style.display='block';
+                    return true;
+                }
+                return false;
+            },
+            promptLogin: () => {
+                if(prompt("Senha Admin:") === Config.adminKey) {
+                    localStorage.setItem('sc_adm','true');
+                    location.reload();
                 }
             },
-
-            // Ações
+            logout: () => {
+                localStorage.removeItem('sc_adm');
+                location.reload();
+            },
             approve: async (id) => {
-                if(!confirm("Pix confirmado? Liberar anúncio?")) return;
-                await Db.updateStatus(id, 'active');
-                App.load();
-                Utils.showToast("Anúncio Aprovado!");
+                if(confirm("Confirmar aprovação?")) {
+                    await Db.update(id, {status:'active'});
+                    App.load();
+                }
             },
-            
-            reject: async (id) => {
-                if(!confirm("Excluir este anúncio permanentemente?")) return;
-                await Db.remove(id);
-                App.load();
-                Utils.showToast("Anúncio Excluído.");
-            },
-            
-            edit: (id) => {
-                // Feature simples de edição: pega o ID e joga no form? 
-                // Para V3 MVP, vamos alertar. Melhor implementação seria carregar no modal.
-                const price = prompt("Novo Preço:");
-                if(price) {
-                     Db.updateData(id, {prodPrice: price}).then(() => App.load());
+            remove: async (id) => {
+                if(confirm("Deletar permanentemente?")) {
+                    await Db.delete(id);
+                    App.load();
                 }
             }
         };
 
         /**
-         * APP LÓGICA E UI
+         * CORE APP
          */
         const App = {
-            currentFilter: 'todos',
+            currentCat: 'todos',
             
             init: () => {
+                App.renderFilters();
                 Admin.check();
-                App.renderCats();
                 App.load();
+                
+                // Listener para o select de Categoria mudar o formulário
+                Utils.$('inpCat').addEventListener('change', (e) => {
+                    const isDonation = e.target.value === 'extra';
+                    Utils.$('salesFields').style.display = isDonation ? 'none' : 'block';
+                    Utils.$('donationFields').style.display = isDonation ? 'block' : 'none';
+                    Utils.$('priceBox').style.display = isDonation ? 'none' : 'block';
+                });
             },
 
-            renderCats: () => {
-                const el = Utils.$('categoryList');
-                el.innerHTML = Config.categories.map(c => 
-                    `<span class="cat-chip ${c.id==='todos'?'active':''}" onclick="App.filter('${c.id}', this)">${c.name}</span>`
+            renderFilters: () => {
+                const list = Utils.$('filtersList');
+                list.innerHTML = Config.categories.map(c => 
+                    `<div class="filter-pill ${c.id==='todos'?'active':''}" onclick="App.setFilter('${c.id}', this)">${c.name}</div>`
                 ).join('');
             },
 
-            filter: (catId, domEl) => {
-                App.currentFilter = catId;
-                document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
-                domEl.classList.add('active');
-                Utils.$('currentCatTitle').innerText = Config.categories.find(c=>c.id===catId).name;
+            setFilter: (cat, el) => {
+                App.currentCat = cat;
+                document.querySelectorAll('.filter-pill').forEach(e=>e.classList.remove('active'));
+                el.classList.add('active');
                 App.load();
             },
 
             load: async () => {
-                const list = await Db.list();
+                const allAds = await Db.getAll();
                 const now = Date.now();
-                const validDays = 7 * 24 * 60 * 60 * 1000;
-                
-                // Separação
-                let pending = [];
-                let active = [];
+                const isAdmin = Admin.check();
 
-                list.forEach(ad => {
-                    const isExpired = (now - ad.createdAt) > validDays;
+                let sales = [];
+                let donations = [];
+                let pending = [];
+
+                // 1. Processar e Limpar Expirados
+                for(let ad of allAds) {
+                    const planRules = Config.plans[ad.plan] || Config.plans.padrao;
+                    const expireTime = planRules.days * 24 * 60 * 60 * 1000;
                     
-                    // Auto Faxina de expirados
-                    if(isExpired) { Db.remove(ad.id); return; }
+                    // Auto Delete Expired
+                    if((now - ad.createdAt) > expireTime) {
+                        Db.delete(ad.id);
+                        continue;
+                    }
 
                     if(ad.status === 'pending') {
-                        pending.push(ad);
-                    } else if (ad.status === 'active') {
-                        // Filtrar por Categoria
-                        if(App.currentFilter === 'todos' || ad.category === App.currentFilter) {
-                            active.push(ad);
+                        if(isAdmin) pending.push(ad);
+                        continue;
+                    }
+
+                    // Separar Vendas x Doações
+                    if(ad.plan === 'doacao' || ad.category === 'extra') {
+                        donations.push(ad);
+                    } else {
+                        // Filtro de Categoria de Vendas
+                        if(App.currentCat === 'todos' || ad.category === App.currentCat) {
+                            sales.push(ad);
                         }
                     }
-                });
-
-                // Ordenar: VIP > Comece > Normal > Data
-                const w = {vip:3, comece:2, padrao:1};
-                active.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
-                
-                // Renderizar Públicos
-                const pubEl = Utils.$('gridPublic');
-                pubEl.innerHTML = '';
-                if(active.length === 0) pubEl.innerHTML = '<div style="padding:2rem; text-align:center; color:#999; grid-column:1/-1;">Nenhum anúncio nesta categoria.</div>';
-                
-                active.forEach(ad => pubEl.appendChild(App.createCard(ad)));
-
-                // Renderizar Pendentes (SÓ SE ADMIN)
-                if(Admin.isLogged()) {
-                    const pendEl = Utils.$('gridPending');
-                    pendEl.innerHTML = '';
-                    if(pending.length === 0) pendEl.innerHTML = '<p style="padding:1rem;">Nada pendente.</p>';
-                    pending.forEach(ad => pendEl.appendChild(App.createCard(ad, true)));
-                    Utils.$('adsCount').innerText = `${active.length} ativos • ${pending.length} aguardando aprovação`;
                 }
+
+                // Ordenar: VIP > Commerce > Padrão
+                const w = { vip: 3, commerce: 2, padrao: 1, doacao: 0 };
+                sales.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
+
+                App.renderList(sales, 'gridSales', false);
+                App.renderList(donations, 'gridDonations', true);
+                if(isAdmin) App.renderList(pending, 'gridPending', false, true);
+                
+                Utils.$('adsCount').innerText = `${sales.length} ofertas`;
             },
 
-            createCard: (ad, isAdminView = false) => {
-                const d = document.createElement('div');
-                d.className = `card ${isAdminView ? 'pending' : ''}`;
-                d.setAttribute('data-plan', ad.plan);
+            renderList: (list, targetId, isDonationMode, isPendingMode=false) => {
+                const el = Utils.$(targetId);
+                el.innerHTML = "";
                 
-                const img = ad.image ? ad.image : 'https://placehold.co/400x300?text=Sem+Foto';
-                const whatsappMsg = `https://wa.me/55${ad.phone}?text=Olá, vi seu anúncio ${ad.title} no Super Classificados SAD/BR.`;
-                
-                let adminHtml = '';
-                if(Admin.isLogged()) {
-                    adminHtml = `
-                    <div class="admin-controls">
-                        ${isAdminView ? `<button class="btn-ctrl btn-approve" onclick="Admin.approve('${ad.id}')">✅ Aceitar</button>` : ''}
-                        <button class="btn-ctrl btn-edit" onclick="Admin.edit('${ad.id}')">✏️ Editar</button>
-                        <button class="btn-ctrl btn-delete" onclick="Admin.reject('${ad.id}')">🗑️ Excluir</button>
-                    </div>`;
+                if(list.length === 0) {
+                    el.innerHTML = `<div style="padding:20px; color:#999; grid-column:1/-1; text-align:center;">Nada aqui por enquanto.</div>`;
+                    return;
                 }
 
-                // AQUI ESTÁ A CORREÇÃO DA DESCRIÇÃO
-                d.innerHTML = `
-                    <div class="status-strip">AGUARDANDO APROVAÇÃO</div>
-                    <div class="plan-tag">${ad.plan}</div>
-                    <div class="card-img-box">
-                        <img src="${img}" class="card-img" loading="lazy">
-                        <span class="cat-tag">${Config.categories.find(c=>c.id===ad.category)?.name || 'Outros'}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-price">${Utils.formatMoney(ad.prodPrice)}</div>
-                        <h3 class="card-title">${ad.title}</h3>
-                        
-                        <!-- NOVA LINHA: DESCRIÇÃO APARECENDO -->
-                        <p style="font-size:0.85rem; color:#666; margin-bottom:12px; line-height:1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${ad.desc}</p>
-                        
-                        ${!isAdminView ? `<a href="${whatsappMsg}" target="_blank" class="btn-wpp">Conversar no WhatsApp</a>` : ''}
-                        ${adminHtml}
-                    </div>
-                `;
-                return d;
+                list.forEach(ad => {
+                    const imgUrl = ad.image || 'https://placehold.co/400x250?text=Sem+Foto';
+                    let badge = '';
+                    let actionBtn = '';
+                    
+                    // BADGES
+                    if(ad.plan === 'vip') badge = `<span class="badge badge-vip">💎 VIP 30D</span>`;
+                    else if(ad.plan === 'commerce') badge = `<span class="badge badge-commerce">🚀 COMMERCE 15D</span>`;
+                    else if(isDonationMode) badge = `<span class="badge" style="background:var(--heart)">❤️ DOAÇÃO</span>`;
+
+                    // TEXTOS
+                    let priceText = Utils.currency(ad.price);
+                    if(isDonationMode) {
+                        priceText = `<span class="donation-type">${ad.donationType?.toUpperCase()}</span>`;
+                    }
+
+                    // ADMIN ACTIONS
+                    let adminHtml = '';
+                    if(Admin.check()) {
+                        const txtBtn = (ad.plan==='doacao') ? "Aprovar (Grátis)" : "Validar PIX";
+                        adminHtml = `
+                            <div class="admin-controls">
+                                ${isPendingMode ? `<button class="btn-admin" style="background:var(--success)" onclick="Admin.approve('${ad.id}')">✅ ${txtBtn}</button>` : ''}
+                                <button class="btn-admin" style="background:var(--danger)" onclick="Admin.remove('${ad.id}')">🗑️ Excluir</button>
+                            </div>
+                        `;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = `card ${isPendingMode ? 'pending' : ''}`;
+                    card.setAttribute('data-plan', ad.plan);
+                    card.innerHTML = `
+                        ${badge}
+                        <img src="${imgUrl}" class="card-img" loading="lazy">
+                        <div class="card-body">
+                            <div class="card-price">${priceText}</div>
+                            <div class="card-title">${ad.title}</div>
+                            <p class="card-desc">${ad.desc}</p>
+                            ${!isPendingMode ? `<a href="https://wa.me/55${ad.phone}?text=Tenho interesse em: ${ad.title}" target="_blank" class="btn-wpp">Contato</a>` : ''}
+                            ${adminHtml}
+                        </div>
+                    `;
+                    el.appendChild(card);
+                });
             }
         };
 
         /**
-         * FORMULÁRIO E MODAL
+         * LÓGICA DO FORMULÁRIO
          */
         const Form = {
-            data: {},
-            
-            updatePrice: () => {
-                const map = { padrao: '3,00', comece: '6,00', vip: '10,00' };
-                Utils.$('finalPrice').innerText = "R$ " + map[Utils.$('inpPlan').value];
+            currentPlan: 'padrao',
+            planPrice: 3,
+
+            selectPlan: (plan, price, el) => {
+                Form.currentPlan = plan;
+                Form.planPrice = price;
+                document.querySelectorAll('.plan-opt').forEach(d => d.classList.remove('selected'));
+                el.classList.add('selected');
             },
 
-            goStep2: () => {
-                if(!Utils.$('inpTitle').value) return alert("Digite o título!");
-                Utils.$('step1').style.display='none'; Utils.$('step2').style.display='block';
-            },
-            goStep1: () => {
-                Utils.$('step2').style.display='none'; Utils.$('step1').style.display='block';
+            goNext: () => {
+                if(!Utils.$('inpTitle').value) return alert("Titulo Obrigatório");
+                document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+                Utils.$('step2').classList.add('active');
             },
 
-submitAd: async () => {
-                const file = Utils.$('inpImg').files[0];
-                let imgData = '';
+            submit: async () => {
+                const cat = Utils.$('inpCat').value;
+                const isDoacao = (cat === 'extra');
                 
-                // Mapa de valores fixos para garantir que não dê R$ 0,00
-                const planMap = {
-                    'padrao': { name: 'Padrão', val: 3.00 },
-                    'comece': { name: 'Comece', val: 6.00 },
-                    'vip': { name: 'VIP', val: 10.00 }
-                };
-
-                if(file) {
-                    Utils.showToast("Processando imagem...");
-                    imgData = await Utils.compressImage(file);
-                }
-
-                // Pega os dados atuais
-                const title = Utils.$('inpTitle').value;
-                const planKey = Utils.$('inpPlan').value; 
-                const selectedPlanInfo = planMap[planKey] || planMap['padrao'];
-                const priceFormatted = Utils.formatMoney(selectedPlanInfo.val);
-
-                if(!title) return alert("Por favor, preencha o título.");
-
-                const payload = {
-                    title: title,
-                    prodPrice: Utils.$('inpPrice').value,
+                // Monta Payload
+                const data = {
+                    title: Utils.$('inpTitle').value,
+                    category: cat,
                     desc: Utils.$('inpDesc').value,
                     phone: Utils.$('inpPhone').value.replace(/\D/g,''),
-                    category: Utils.$('inpCat').value,
-                    plan: planKey,
-                    image: imgData,
-                    status: 'pending'
+                    image: await Utils.compress(Utils.$('inpImg').files[0]),
+                    
+                    // Se for doação, força plano Grátis
+                    plan: isDoacao ? 'doacao' : Form.currentPlan,
+                    price: isDoacao ? 0 : Utils.$('inpPrice').value,
+                    donationType: isDoacao ? Utils.$('inpDonationType').value : null
                 };
 
-                Utils.showToast("Enviando anúncio...");
-                const newId = await Db.create(payload);
+                // Tela de Loading
+                const finalPlanData = Config.plans[data.plan];
+                const realPrice = finalPlanData.price;
+                
+                // Grava no BD
+                const id = await Db.create(data);
 
-                // ATUALIZA A TELA DE PAGAMENTO COM VALOR REAL
-                Utils.$('step2').style.display = 'none';
-                Utils.$('stepSuccess').style.display = 'block';
-                Utils.$('newAdId').innerText = newId.slice(-5);
-                Utils.$('finalPrice').innerText = priceFormatted; // Aqui corrige o R$ 0,00 do print
+                // Mostra Sucesso
+                document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+                Utils.$('stepSuccess').classList.add('active');
                 
-                // MENSAGEM DO ZAP CORRIGIDA
-                // Ex: Olá Admin! Fiz o anúncio (Padrão [R$ 3,00]) "Fusca" (ID: 123). Segue pix...
-                const zapMsg = `Olá Admin! Fiz o anúncio (${selectedPlanInfo.name} [${priceFormatted}]) "${payload.title}" (ID: ${newId.slice(-5)}). Segue meu comprovante PIX de ${priceFormatted} para liberar a publicação.`;
+                Utils.$('resId').innerText = "#" + id.slice(-4);
                 
-                Utils.$('btnSendReceipt').onclick = () => window.open(`https://wa.me/5561999487649?text=${encodeURIComponent(zapMsg)}`, '_blank');
+                if(realPrice === 0) {
+                    Utils.$('pixBox').style.display = 'none'; // Esconde cobrança se for doação
+                    Utils.$('btnZap').innerText = "Enviar Solicitação de Doação";
+                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Publiquei uma doação (${data.title}) ID: ${id}. Aguardo aprovação!`, '_blank');
+                } else {
+                    Utils.$('pixBox').style.display = 'block';
+                    Utils.$('resValue').innerText = Utils.currency(realPrice);
+                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Novo Anúncio: ${data.title} (${finalPlanData.name}). Valor PIX: ${Utils.currency(realPrice)}. Aguardo liberação!`, '_blank');
+                }
             }
         };
 
         const Modal = {
-            open: () => { 
-                Utils.$('mainModal').style.display = 'flex'; 
-                Utils.$('step1').style.display = 'block';
-                Utils.$('step2').style.display = 'none';
-                Utils.$('stepSuccess').style.display = 'none';
-                Utils.$('adForm').reset();
-            },
-            close: () => Utils.$('mainModal').style.display = 'none'
+            overlay: Utils.$('modalMain'),
+            open: () => { Modal.resetSteps(); Modal.overlay.style.display='flex'; Utils.$('inpCat').value='veiculos'; Utils.$('inpCat').dispatchEvent(new Event('change')); },
+            openDonation: () => { Modal.open(); Utils.$('inpCat').value='extra'; Utils.$('inpCat').dispatchEvent(new Event('change')); }, // Atalho direto pra doação
+            close: () => Modal.overlay.style.display='none',
+            resetSteps: () => {
+                document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+                Utils.$('step1').classList.add('active');
+                Utils.$('inpCat').value = 'veiculos';
+                // Reset inputs...
+            }
         };
 
-        // Iniciar
-        App.init();
+        // Boot
+        window.addEventListener('load', App.init);
 
     </script>
 </body>
