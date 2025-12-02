@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -483,7 +482,20 @@
                     else if(isDonationMode) badge = `<span class="badge" style="background:var(--heart)">❤️ DOAÇÃO</span>`;
 
                     // TEXTOS
-                    let priceText = Utils.currency(ad.price);
+
+
+
+
+                   // CORREÇÃO INTELIGENTE (Retrocompatibilidade V3 -> V4)
+                    // Tenta ler o preço novo 'price'. Se não achar, pega o antigo 'prodPrice'. Se não tiver nenhum, assume 0.
+                    const displayValue = (ad.price !== undefined) ? ad.price : (ad.prodPrice || 0);
+                    let priceText = Utils.currency(displayValue);
+
+
+
+
+
+
                     if(isDonationMode) {
                         priceText = `<span class="donation-type">${ad.donationType?.toUpperCase()}</span>`;
                     }
