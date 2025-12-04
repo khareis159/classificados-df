@@ -237,11 +237,34 @@
 
             <!-- PASSO 2: DETALHES -->
             <div id="step2" class="step">
-                <div id="priceBox">
-                    <label>Valor (R$)</label>
-                    <input type="number" id="inpPrice" class="form-control" placeholder="0,00">
+
+
+
+
+              <div id="priceBox" style="margin-bottom:12px;">
+                    <label>Definição do Valor</label>
+                    <div style="display:flex; gap:10px;">
+                        <!-- Seletor do Tipo -->
+                        <select id="selPriceType" class="form-control" style="width:40%; background:#f1f5f9; font-weight:bold;" onchange="Form.togglePrice()">
+                            <option value="brl">💲 R$ (Valor)</option>
+                            <option value="A Combinar">🤝 A Combinar</option>
+                            <option value="Sob Consulta">📞 Sob Consulta</option>
+                            <option value="Troca">🔄 Aceito Troca</option>
+                            <option value="Alugo">🔑 Alugo</option>
+                            <option value="custom">✍️ Texto Livre</option>
+                        </select>
+                        
+                        <!-- Caixa Numérica (Padrão) -->
+                        <input type="number" id="inpPrice" class="form-control" placeholder="0,00" style="width:60%;">
+                        
+                        <!-- Caixa de Texto (Escondida inicialmente) -->
+                        <input type="text" id="inpPriceText" class="form-control" placeholder="Ex: Oferta / Promoção" style="width:60%; display:none;">
+                    </div>
                 </div>
                 
+
+
+
                 <label>Descrição</label>
                 <textarea id="inpDesc" rows="4" class="form-control" placeholder="Descreva os detalhes..."></textarea>
                 
@@ -455,6 +478,11 @@
                 const w = { vip: 3, commerce: 2, padrao: 1, doacao: 0 };
                 sales.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
 
+ 
+
+
+
+
                 App.renderList(sales, 'gridSales', false);
                 App.renderList(donations, 'gridDonations', true);
                 if(isAdmin) App.renderList(pending, 'gridPending', false, true);
@@ -462,7 +490,9 @@
                 Utils.$('adsCount').innerText = `${sales.length} ofertas`;
             },
 
-            renderList: (list, targetId, isDonationMode, isPendingMode=false) => {
+
+
+renderList: (list, targetId, isDonationMode, isPendingMode=false) => {
                 const el = Utils.$(targetId);
                 el.innerHTML = "";
                 
@@ -474,33 +504,33 @@
                 list.forEach(ad => {
                     const imgUrl = ad.image || 'https://placehold.co/400x250?text=Sem+Foto';
                     let badge = '';
-                    let actionBtn = '';
                     
-                    // BADGES
+                    // 1. DEFINIR O BADGE (ETIQUETA)
                     if(ad.plan === 'vip') badge = `<span class="badge badge-vip">💎 VIP 30D</span>`;
                     else if(ad.plan === 'commerce') badge = `<span class="badge badge-commerce">🚀 COMMERCE 15D</span>`;
                     else if(isDonationMode) badge = `<span class="badge" style="background:var(--heart)">❤️ DOAÇÃO</span>`;
 
-                    // TEXTOS
-
-
-
-
-                   // CORREÇÃO INTELIGENTE (Retrocompatibilidade V3 -> V4)
-                    // Tenta ler o preço novo 'price'. Se não achar, pega o antigo 'prodPrice'. Se não tiver nenhum, assume 0.
-                    const displayValue = (ad.price !== undefined) ? ad.price : (ad.prodPrice || 0);
-                    let priceText = Utils.currency(displayValue);
-
-
-
-
-
+                    // 2. DEFINIR O PREÇO OU TEXTO (Lógica da Alteração Manual)
+                    // Tenta pegar 'price' (novo) ou 'prodPrice' (velho). Se não tiver, assume 0.
+                    const val = (ad.price !== undefined) ? ad.price : (ad.prodPrice || 0);
+                    let priceText = "";
 
                     if(isDonationMode) {
+                        // Se for doação, pega o tipo (Objeto, Valor, etc)
                         priceText = `<span class="donation-type">${ad.donationType?.toUpperCase()}</span>`;
+                    } else {
+                        // MODO VENDA: Verifica se é número ou texto
+                        // parseFloat transforma "50.5" em número. Se o resultado não for NaN (Not a Number), é dinheiro.
+                        if( !isNaN(parseFloat(val)) && isFinite(val) ) {
+                            // É dinheiro! Formata com R$
+                            priceText = Utils.currency(val);
+                        } else {
+                            // É texto! (Ex: "A Combinar", "Troca", etc)
+                            priceText = `<span style="font-size:0.9em; color:var(--primary); font-weight:700;">${val}</span>`;
+                        }
                     }
 
-                    // ADMIN ACTIONS
+                    // 3. BOTÕES DE ADMIN
                     let adminHtml = '';
                     if(Admin.check()) {
                         const txtBtn = (ad.plan==='doacao') ? "Aprovar (Grátis)" : "Validar PIX";
@@ -512,6 +542,7 @@
                         `;
                     }
 
+                    // 4. CRIAR O HTML DO CARTÃO
                     const card = document.createElement('div');
                     card.className = `card ${isPendingMode ? 'pending' : ''}`;
                     card.setAttribute('data-plan', ad.plan);
@@ -522,21 +553,51 @@
                             <div class="card-price">${priceText}</div>
                             <div class="card-title">${ad.title}</div>
                             <p class="card-desc">${ad.desc}</p>
-                            ${!isPendingMode ? `<a href="https://wa.me/55${ad.phone}?text=Tenho interesse em: ${ad.title}" target="_blank" class="btn-wpp">Contato</a>` : ''}
+                            ${!isPendingMode ? `<a href="https://wa.me/55${ad.phone}?text=Olá! Vi seu anúncio: ${ad.title}" target="_blank" class="btn-wpp">Contato</a>` : ''}
                             ${adminHtml}
                         </div>
                     `;
                     el.appendChild(card);
                 });
-            }
+                // <--- NÃO ESQUEÇA ESSA VÍRGULA E CHAVE NO FINAL SE ESTIVER NO MEIO DO OBJETO
+
+
         };
 
         /**
          * LÓGICA DO FORMULÁRIO
          */
-        const Form = {
+
+
+
+
+
+
+       const Form = {
             currentPlan: 'padrao',
             planPrice: 3,
+
+            // Função nova para mostrar/esconder caixas de valor
+            togglePrice: () => {
+                const type = Utils.$('selPriceType').value;
+                const isCustom = (type === 'custom');
+                const isFixedText = (type !== 'brl' && !isCustom); // "A Combinar", "Sob Consulta" etc
+
+                if (type === 'brl') {
+                    Utils.$('inpPrice').style.display = 'block';
+                    Utils.$('inpPriceText').style.display = 'none';
+                    Utils.$('inpPrice').value = ''; 
+                } else if (isCustom) {
+                    Utils.$('inpPrice').style.display = 'none';
+                    Utils.$('inpPriceText').style.display = 'block';
+                    Utils.$('inpPriceText').focus();
+                } else {
+                    // Para opções prontas, escondemos ambos inputs visualmente ou deixamos bloqueado?
+                    // Melhor estratégia: Esconder input numérico e ignorar input texto
+                    Utils.$('inpPrice').style.display = 'none';
+                    Utils.$('inpPriceText').style.display = 'none';
+                }
+            },
 
             selectPlan: (plan, price, el) => {
                 Form.currentPlan = plan;
@@ -555,7 +616,26 @@
                 const cat = Utils.$('inpCat').value;
                 const isDoacao = (cat === 'extra');
                 
-                // Monta Payload
+                // --- LÓGICA NOVA DE PREÇO FLEXÍVEL ---
+                let finalDisplayPrice = 0; // O que vai aparecer no card
+                
+                if (isDoacao) {
+                    finalDisplayPrice = 0; // Doação é sempre zero/texto de doação
+                } else {
+                    const priceType = Utils.$('selPriceType').value;
+                    if(priceType === 'brl') {
+                        // Se for R$, pega o numero
+                        finalDisplayPrice = Utils.$('inpPrice').value;
+                    } else if (priceType === 'custom') {
+                        // Se for texto livre
+                        finalDisplayPrice = Utils.$('inpPriceText').value;
+                    } else {
+                        // Se for select pronto (A Combinar, etc)
+                        finalDisplayPrice = priceType;
+                    }
+                }
+                // -------------------------------------
+
                 const data = {
                     title: Utils.$('inpTitle').value,
                     category: cat,
@@ -563,15 +643,17 @@
                     phone: Utils.$('inpPhone').value.replace(/\D/g,''),
                     image: await Utils.compress(Utils.$('inpImg').files[0]),
                     
-                    // Se for doação, força plano Grátis
                     plan: isDoacao ? 'doacao' : Form.currentPlan,
-                    price: isDoacao ? 0 : Utils.$('inpPrice').value,
+                    
+                    // Salvamos a string final aqui (pode ser "100" ou "A Combinar")
+                    price: finalDisplayPrice, 
+                    
                     donationType: isDoacao ? Utils.$('inpDonationType').value : null
                 };
 
                 // Tela de Loading
                 const finalPlanData = Config.plans[data.plan];
-                const realPrice = finalPlanData.price;
+                const feeToPay = finalPlanData.price; // Valor que ELE PAGA pro SITE (Admin)
                 
                 // Grava no BD
                 const id = await Db.create(data);
@@ -582,17 +664,23 @@
                 
                 Utils.$('resId').innerText = "#" + id.slice(-4);
                 
-                if(realPrice === 0) {
-                    Utils.$('pixBox').style.display = 'none'; // Esconde cobrança se for doação
-                    Utils.$('btnZap').innerText = "Enviar Solicitação de Doação";
-                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Publiquei uma doação (${data.title}) ID: ${id}. Aguardo aprovação!`, '_blank');
+                if(feeToPay === 0) {
+                    Utils.$('pixBox').style.display = 'none';
+                    Utils.$('btnZap').innerText = "Enviar Solicitação";
+                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Doação (${data.title}) ID: ${id}. Aguardo aprovação!`, '_blank');
                 } else {
                     Utils.$('pixBox').style.display = 'block';
-                    Utils.$('resValue').innerText = Utils.currency(realPrice);
-                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Novo Anúncio: ${data.title} (${finalPlanData.name}). Valor PIX: ${Utils.currency(realPrice)}. Aguardo liberação!`, '_blank');
+                    Utils.$('resValue').innerText = Utils.currency(feeToPay);
+                    // No Zap, mandamos o título e o valor da TAXA do anúncio
+                    Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Novo Anúncio: ${data.title} (${finalPlanData.name}). Valor PIX: ${Utils.currency(feeToPay)}. Aguardo liberação!`, '_blank');
                 }
             }
         };
+
+
+
+
+
 
         const Modal = {
             overlay: Utils.$('modalMain'),
