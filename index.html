@@ -124,6 +124,21 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
+
+
+/* ESTILO DO CONTADOR DE VISITAS */
+        .visit-counter-box {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(31, 41, 55, 0.05); /* Fundo cinza bem leve */
+            padding: 5px 15px; border-radius: 20px;
+            margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .visit-icon { font-size: 1.1rem; }
+        .visit-number { font-weight: 800; color: var(--primary); font-family: monospace; font-size: 1rem; }
+        .visit-label { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+
+
     </style>
 </head>
 <body>
@@ -181,6 +196,13 @@
     </div>
 
     <footer>
+        <!-- MÓDULO CONTADOR -->
+        <div class="visit-counter-box" title="Total de acessos ao site">
+            <span class="visit-icon">📊</span>
+            <span class="visit-number" id="globalCounter">...</span>
+            <span class="visit-label">Visitas</span>
+        </div>
+
         <p>Super Classificados SAD/BR © 2025 • Top Full Version</p>
         <p style="margin-top:5px; cursor:pointer;" onclick="Admin.promptLogin()">Developed by <strong>Carlos Alberto Reis</strong> 🔒</p>
     </footer>
@@ -694,6 +716,59 @@ renderList: (list, targetId, isDonationMode, isPendingMode=false) => {
                 // Reset inputs...
             }
         };
+
+/**
+         * CONTADOR DE VISITAS (Simples e Seguro)
+         */
+        const Visits = {
+            init: async () => {
+                // 1. Prepara URL paralela (não mistura com anúncios)
+                // Remove "/ads" do final para pegar a raiz e cria "/site_stats"
+                const baseUrl = Config.dbUrl.replace(/\/ads$/, ''); 
+                const statsUrl = `${baseUrl}/site_stats.json`;
+
+                // 2. Elemento Visual
+                const el = document.getElementById('globalCounter');
+
+                try {
+                    // Pega valor atual
+                    let res = await fetch(statsUrl);
+                    let data = await res.json();
+                    let count = (data && data.visits) ? data.visits : 0;
+
+                    // 3. Lógica de Incremento (1 por Sessão)
+                    // Usamos sessionStorage: se fechar o navegador e voltar, conta novo. Se der F5, não conta.
+                    if (!sessionStorage.getItem('sc_visited')) {
+                        count++;
+                        // Salva no banco (Atualização background)
+                        fetch(statsUrl, {
+                            method: 'PATCH',
+                            body: JSON.stringify({ visits: count })
+                        }).catch(err => console.error("Erro contador", err)); // Silencioso
+                        
+                        // Marca sessão como visitada
+                        sessionStorage.setItem('sc_visited', 'true');
+                    }
+
+                    // 4. Formata e Exibe (ex: 1.234)
+                    el.innerText = count.toLocaleString('pt-BR');
+                    
+                } catch (e) {
+                    el.innerText = "-"; // Fallback se der erro
+                    console.log("Stats offline");
+                }
+            }
+        };
+
+        // Adiciona o contador na inicialização do App
+        // Vamos alterar a linha do Boot para iniciar o contador junto
+        const originalInit = App.init; 
+        App.init = () => {
+            originalInit(); // Roda o site normal
+            Visits.init();  // Roda o contador
+        };
+
+
 
         // Boot
         window.addEventListener('load', App.init);
