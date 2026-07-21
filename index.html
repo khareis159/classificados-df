@@ -120,6 +120,13 @@ border-radius: 20px; font-size: 0.85rem; cursor: pointer;
 transition: 0.2s;
 }
 .ap-pill.active { background: var(--ap); color: white; border-color: var(--ap); }
+/* RECOMPENSA AP */
+.reward-badge {
+background: linear-gradient(135deg, #fbbf24, #f59e0b);
+color: white; padding: 4px 10px; border-radius: 12px;
+font-size: 0.75rem; font-weight: bold; display: inline-block;
+margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 /* UTILS */
 .btn-wpp { background: #25D366; color: white; display: block; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: auto; }
 .admin-controls { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 5px; }
@@ -141,7 +148,7 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 /* ESTILO DO CONTADOR DE VISITAS */
 .visit-counter-box {
 display: inline-flex; align-items: center; gap: 8px;
-background: rgba(31, 41, 55, 0.05); /* Fundo cinza bem leve */
+background: rgba(31, 41, 55, 0.05);
 padding: 5px 15px; border-radius: 20px;
 margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 }
@@ -286,6 +293,10 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <input type="text" id="inpAPLocal" class="form-control" placeholder="Ex: Praça central, próximo ao mercado..." style="border-color:#f59e0b; margin-bottom:8px;">
 <label style="color:#b45309; font-weight:bold; display:block; margin-bottom:5px;">Data aproximada:</label>
 <input type="date" id="inpAPDate" class="form-control" style="border-color:#f59e0b;">
+<!-- RECOMPENSA OPCIONAL -->
+<label style="color:#b45309; font-weight:bold; display:block; margin-bottom:5px; margin-top:10px;">💰 Recompensa (opcional):</label>
+<input type="number" id="inpAPReward" class="form-control" placeholder="0.00" step="0.01" style="border-color:#f59e0b;">
+<small style="color:#78350f; font-size:0.75rem;">Ofereça um valor em PIX para quem encontrar/devolver</small>
 </div>
 <div id="salesFields">
 <label style="display:block; margin-bottom:5px; font-weight:bold;">Escolha o Plano:</label>
@@ -351,7 +362,7 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 * CONFIGURAÇÃO E DADOS
 */
 const Config = {
-dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads", // Use seu DB
+dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads",
 adminKey: "0123class2025",
 pixKey: "61 999487649",
 // Regras de Planos (Dias e Preço)
@@ -370,7 +381,7 @@ categories: [
 {id:'empregos', name:'Empregos'},
 {id:'servicos', name:'Serviços'},
 {id:'diversos', name:'Diversos'},
-{id:'achados_perdidos', name:'Achados & Perdidos'} // ✅ CORRIGIDO - Adicionado
+{id:'achados_perdidos', name:'Achados & Perdidos'} // ✅ CORRIGIDO
 ]
 };
 const Utils = {
@@ -456,7 +467,7 @@ App.load();
 */
 const App = {
 currentCat: 'todos',
-currentAPFilter: 'todos', // ✅ NOVO - Filtro de Achados & Perdidos
+currentAPFilter: 'todos',
 init: () => {
 App.renderFilters();
 Admin.check();
@@ -465,10 +476,10 @@ App.load();
 Utils.$('inpCat').addEventListener('change', (e) => {
 const val = e.target.value;
 const isDonation = val === 'extra';
-const isAP = val === 'achados_perdidos'; // ✅ NOVO
+const isAP = val === 'achados_perdidos';
 Utils.$('salesFields').style.display = (isDonation || isAP) ? 'none' : 'block';
 Utils.$('donationFields').style.display = isDonation ? 'block' : 'none';
-Utils.$('apFields').style.display = isAP ? 'block' : 'none'; // ✅ NOVO
+Utils.$('apFields').style.display = isAP ? 'block' : 'none';
 Utils.$('priceBox').style.display = (isDonation || isAP) ? 'none' : 'block';
 });
 },
@@ -484,7 +495,7 @@ document.querySelectorAll('.filter-pill').forEach(e=>e.classList.remove('active'
 el.classList.add('active');
 App.load();
 },
-setAPFilter: (type, el) => { // ✅ NOVO MÉTODO
+setAPFilter: (type, el) => {
 App.currentAPFilter = type;
 document.querySelectorAll('#apFilters .ap-pill').forEach(e => e.classList.remove('active'));
 el.classList.add('active');
@@ -496,7 +507,7 @@ const now = Date.now();
 const isAdmin = Admin.check();
 let sales = [];
 let donations = [];
-let apAds = []; // ✅ NOVO
+let apAds = [];
 let pending = [];
 // 1. Processar e Limpar Expirados
 for(let ad of allAds) {
@@ -511,7 +522,7 @@ if(ad.status === 'pending') {
 if(isAdmin) pending.push(ad);
 continue;
 }
-// ✅ CORRETO - Separação em 3 grupos
+// Separação em 3 grupos
 if(ad.category === 'achados_perdidos' || ad.plan === 'ap') {
 if(App.currentAPFilter === 'todos' || ad.apType === App.currentAPFilter) {
 apAds.push(ad);
@@ -528,9 +539,9 @@ sales.push(ad);
 // Ordenar: VIP > Commerce > Padrão
 const w = { vip: 3, commerce: 2, padrao: 1, doacao: 0, ap: 0 };
 sales.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
-apAds.sort((a,b) => b.createdAt - a.createdAt); // ✅ NOVO - Mais recentes primeiro
+apAds.sort((a,b) => b.createdAt - a.createdAt);
 App.renderList(sales, 'gridSales', false);
-App.renderAPList(apAds); // ✅ NOVO
+App.renderAPList(apAds);
 App.renderList(donations, 'gridDonations', true);
 if(isAdmin) App.renderList(pending, 'gridPending', false, true);
 Utils.$('adsCount').innerText = `${sales.length} ofertas`;
@@ -549,28 +560,22 @@ let badge = '';
 if(ad.plan === 'vip') badge = `<span class="badge badge-vip">💎 VIP 30D</span>`;
 else if(ad.plan === 'commerce') badge = `<span class="badge badge-commerce">🚀 COMMERCE 15D</span>`;
 else if(isDonationMode) badge = `<span class="badge" style="background:var(--heart)">❤️ DOAÇÃO</span>`;
-// 2. DEFINIR O PREÇO OU TEXTO (Lógica da Alteração Manual)
-// Tenta pegar 'price' (novo) ou 'prodPrice' (velho). Se não tiver, assume 0.
+// 2. DEFINIR O PREÇO OU TEXTO
 const val = (ad.price !== undefined) ? ad.price : (ad.prodPrice || 0);
 let priceText = "";
 if(isDonationMode) {
-// Se for doação, pega o tipo (Objeto, Valor, etc)
 priceText = `<span class="donation-type">${ad.donationType?.toUpperCase()}</span>`;
 } else {
-// MODO VENDA: Verifica se é número ou texto
-// parseFloat transforma "50.5" em número. Se o resultado não for NaN (Not a Number), é dinheiro.
 if( !isNaN(parseFloat(val)) && isFinite(val) ) {
-// É dinheiro! Formata com R$
 priceText = Utils.currency(val);
 } else {
-// É texto! (Ex: "A Combinar", "Troca", etc)
 priceText = `<span style="font-size:0.9em; color:var(--primary); font-weight:700;">${val}</span>`;
 }
 }
 // 3. BOTÕES DE ADMIN
 let adminHtml = '';
 if(Admin.check()) {
-const txtBtn = (ad.plan==='doacao' || ad.plan==='ap') ? "Aprovar (Grátis)" : "Validar PIX"; // ✅ CORRIGIDO
+const txtBtn = (ad.plan==='doacao' || ad.plan==='ap') ? "Aprovar (Grátis)" : "Validar PIX";
 adminHtml = `
 <div class="admin-controls">
 ${isPendingMode ? `<button class="btn-admin" style="background:var(--success)" onclick="Admin.approve('${ad.id}')">✅ ${txtBtn}</button>` : ''}
@@ -596,7 +601,7 @@ ${adminHtml}
 el.appendChild(card);
 });
 },
-renderAPList: (list) => { // ✅ NOVO MÉTODO COMPLETO
+renderAPList: (list) => {
 const el = Utils.$('gridAP');
 el.innerHTML = "";
 if(list.length === 0) {
@@ -619,6 +624,11 @@ let dateText = '';
 if(ad.apDate) {
 const [y,m,d] = ad.apDate.split('-');
 dateText = `${d}/${m}/${y}`;
+}
+// RECOMPENSA
+let rewardHtml = '';
+if(ad.apReward && parseFloat(ad.apReward) > 0) {
+rewardHtml = `<div class="reward-badge">💰 Recompensa: ${Utils.currency(ad.apReward)}</div>`;
 }
 let adminHtml = '';
 if(Admin.check()) {
@@ -644,7 +654,8 @@ ${catLabel}
 📅 <strong>Data:</strong> ${dateText || 'Não informada'}
 </div>
 <p class="card-desc">${ad.desc}</p>
-${ad.status!=='pending' ? `<a href="https://wa.me/55${ad.phone}?text=Olá! Vi seu anúncio de ${isAchei?'ACHADO':'PERDIDO'}: ${ad.title}" target="_blank" class="btn-wpp">Contato</a>` : ''}
+${rewardHtml}
+${ad.status!=='pending' ? `<a href="https://wa.me/55${ad.phone}?text=Olá! Vi seu anúncio de ${isAchei?'ACHADO':'PERDIDO'}: ${ad.title}${ad.apReward ? ' (Recompensa: R$ '+ad.apReward+')' : ''}" target="_blank" class="btn-wpp">Contato</a>` : ''}
 ${adminHtml}
 </div>
 `;
@@ -658,11 +669,9 @@ el.appendChild(card);
 const Form = {
 currentPlan: 'padrao',
 planPrice: 3,
-// Função nova para mostrar/esconder caixas de valor
 togglePrice: () => {
 const type = Utils.$('selPriceType').value;
 const isCustom = (type === 'custom');
-const isFixedText = (type !== 'brl' && !isCustom); // "A Combinar", "Sob Consulta" etc
 if (type === 'brl') {
 Utils.$('inpPrice').style.display = 'block';
 Utils.$('inpPriceText').style.display = 'none';
@@ -672,8 +681,6 @@ Utils.$('inpPrice').style.display = 'none';
 Utils.$('inpPriceText').style.display = 'block';
 Utils.$('inpPriceText').focus();
 } else {
-// Para opções prontas, escondemos ambos inputs visualmente ou deixamos bloqueado?
-// Melhor estratégia: Esconder input numérico e ignorar input texto
 Utils.$('inpPrice').style.display = 'none';
 Utils.$('inpPriceText').style.display = 'none';
 }
@@ -692,66 +699,59 @@ Utils.$('step2').classList.add('active');
 submit: async () => {
 const cat = Utils.$('inpCat').value;
 const isDoacao = (cat === 'extra');
-const isAP = (cat === 'achados_perdidos'); // ✅ NOVO
-// --- LÓGICA NOVA DE PREÇO FLEXÍVEL ---
-let finalDisplayPrice = 0; // O que vai aparecer no card
-if (isDoacao || isAP) { // ✅ CORRIGIDO
-finalDisplayPrice = 0; // Doação e AP são sempre zero
+const isAP = (cat === 'achados_perdidos');
+let finalDisplayPrice = 0;
+if (isDoacao || isAP) {
+finalDisplayPrice = 0;
 } else {
 const priceType = Utils.$('selPriceType').value;
 if(priceType === 'brl') {
-// Se for R$, pega o numero
 finalDisplayPrice = Utils.$('inpPrice').value;
 } else if (priceType === 'custom') {
-// Se for texto livre
 finalDisplayPrice = Utils.$('inpPriceText').value;
 } else {
-// Se for select pronto (A Combinar, etc)
 finalDisplayPrice = priceType;
 }
 }
-// -------------------------------------
 const data = {
 title: Utils.$('inpTitle').value,
 category: cat,
 desc: Utils.$('inpDesc').value,
 phone: Utils.$('inpPhone').value.replace(/\D/g,''),
 image: await Utils.compress(Utils.$('inpImg').files[0]),
-plan: isDoacao ? 'doacao' : (isAP ? 'ap' : Form.currentPlan), // ✅ CORRIGIDO
-// Salvamos a string final aqui (pode ser "100" ou "A Combinar")
+plan: isDoacao ? 'doacao' : (isAP ? 'ap' : Form.currentPlan),
 price: finalDisplayPrice,
 donationType: isDoacao ? Utils.$('inpDonationType').value : null,
-// ✅ NOVOS CAMPOS PARA AP
 apType: isAP ? Utils.$('inpAPType').value : null,
 apCategory: isAP ? Utils.$('inpAPCategory').value : null,
 apLocal: isAP ? Utils.$('inpAPLocal').value : null,
-apDate: isAP ? Utils.$('inpAPDate').value : null
+apDate: isAP ? Utils.$('inpAPDate').value : null,
+apReward: isAP ? Utils.$('inpAPReward').value : null // ✅ NOVO - Recompensa
 };
-// Tela de Loading
 const finalPlanData = Config.plans[data.plan];
-const feeToPay = finalPlanData.price; // Valor que ELE PAGA pro SITE (Admin)
-// Grava no BD
+const feeToPay = finalPlanData.price;
 const id = await Db.create(data);
-// Mostra Sucesso
 document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
 Utils.$('stepSuccess').classList.add('active');
 Utils.$('resId').innerText = "#" + id.slice(-4);
 if(feeToPay === 0) {
 Utils.$('pixBox').style.display = 'none';
 Utils.$('btnZap').innerText = "Enviar Solicitação";
-// ✅ MENSAGENS CONTEXTUALIZADAS
 let msg = '';
 if(isDoacao) {
 msg = `Olá! Doação (${data.title}) ID: ${id}. Aguardo aprovação!`;
 } else if(isAP) {
 const tipo = data.apType === 'achei' ? 'ACHEI' : 'PERDI';
-msg = `Olá! ${tipo}: ${data.title} (ID: ${id}). Local: ${data.apLocal}. Aguardo aprovação!`;
+msg = `Olá! ${tipo}: ${data.title} (ID: ${id}). Local: ${data.apLocal}`;
+if(data.apReward && parseFloat(data.apReward) > 0) {
+msg += `. Recompensa: R$ ${data.apReward}`;
+}
+msg += `. Aguardo aprovação!`;
 }
 Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=${encodeURIComponent(msg)}`, '_blank');
 } else {
 Utils.$('pixBox').style.display = 'block';
 Utils.$('resValue').innerText = Utils.currency(feeToPay);
-// No Zap, mandamos o título e o valor da TAXA do anúncio
 Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?text=Olá! Novo Anúncio: ${data.title} (${finalPlanData.name}). Valor PIX: ${Utils.currency(feeToPay)}. Aguardo liberação!`, '_blank');
 }
 }
@@ -759,60 +759,48 @@ Utils.$('btnZap').onclick = () => window.open(`https://wa.me/55${Config.pixKey}?
 const Modal = {
 overlay: Utils.$('modalMain'),
 open: () => { Modal.resetSteps(); Modal.overlay.style.display='flex'; Utils.$('inpCat').value='veiculos'; Utils.$('inpCat').dispatchEvent(new Event('change')); },
-openDonation: () => { Modal.open(); Utils.$('inpCat').value='extra'; Utils.$('inpCat').dispatchEvent(new Event('change')); }, // Atalho direto pra doação
-openAP: () => { Modal.open(); Utils.$('inpCat').value='achados_perdidos'; Utils.$('inpCat').dispatchEvent(new Event('change')); }, // ✅ NOVO - Atalho direto pra AP
+openDonation: () => { Modal.open(); Utils.$('inpCat').value='extra'; Utils.$('inpCat').dispatchEvent(new Event('change')); },
+openAP: () => { Modal.open(); Utils.$('inpCat').value='achados_perdidos'; Utils.$('inpCat').dispatchEvent(new Event('change')); },
 close: () => Modal.overlay.style.display='none',
 resetSteps: () => {
 document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
 Utils.$('step1').classList.add('active');
 Utils.$('inpCat').value = 'veiculos';
-Utils.$('inpCat').dispatchEvent(new Event('change')); // ✅ CORRIGIDO - Reset também dispara o evento
+Utils.$('inpCat').dispatchEvent(new Event('change')); // ✅ CORRIGIDO
 }
 };
 /**
-* CONTADOR DE VISITAS (Simples e Seguro)
+* CONTADOR DE VISITAS
 */
 const Visits = {
 init: async () => {
-// 1. Prepara URL paralela (não mistura com anúncios)
-// Remove "/ads" do final para pegar a raiz e cria "/site_stats"
 const baseUrl = Config.dbUrl.replace(/\/ads$/, '');
 const statsUrl = `${baseUrl}/site_stats.json`;
-// 2. Elemento Visual
 const el = document.getElementById('globalCounter');
 try {
-// Pega valor atual
 let res = await fetch(statsUrl);
 let data = await res.json();
 let count = (data && data.visits) ? data.visits : 0;
-// 3. Lógica de Incremento (1 por Sessão)
-// Usamos sessionStorage: se fechar o navegador e voltar, conta novo. Se der F5, não conta.
 if (!sessionStorage.getItem('sc_visited')) {
 count++;
-// Salva no banco (Atualização background)
 fetch(statsUrl, {
 method: 'PATCH',
 body: JSON.stringify({ visits: count })
-}).catch(err => console.error("Erro contador", err)); // Silencioso
-// Marca sessão como visitada
+}).catch(err => console.error("Erro contador", err));
 sessionStorage.setItem('sc_visited', 'true');
 }
-// 4. Formata e Exibe (ex: 1.234)
 el.innerText = count.toLocaleString('pt-BR');
 } catch (e) {
-el.innerText = "-"; // Fallback se der erro
+el.innerText = "-";
 console.log("Stats offline");
 }
 }
 };
-// Adiciona o contador na inicialização do App
-// Vamos alterar a linha do Boot para iniciar o contador junto
 const originalInit = App.init;
 App.init = () => {
-originalInit(); // Roda o site normal
-Visits.init();  // Roda o contador
+originalInit();
+Visits.init();
 };
-// Boot
 window.addEventListener('load', App.init);
 </script>
 </body>
