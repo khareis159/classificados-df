@@ -4,35 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Super Classificados SAD/BR | Top V4</title>
-<!-- Ícone da Aba (Favicon) - Resolve o erro 404 -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-/* Vendas */
 --primary: #2563eb;
 --primary-dark: #1e40af;
 --secondary: #64748b;
 --bg-body: #f8fafc;
-/* Status */
 --success: #10b981;
 --danger: #ef4444;
 --warning: #f59e0b;
-/* Planos */
 --vip: #FFD700;
---commerce: #8b5cf6; /* Roxo para Commerce */
+--commerce: #8b5cf6;
 --padrao: #e2e8f0;
-/* Doações */
 --heart: #e11d48;
 --heart-bg: #fff1f2;
-/* Achados & Perdidos */
 --ap: #f59e0b;
 --ap-bg: #fffbeb;
 --ap-dark: #b45309;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 body { background-color: var(--bg-body); color: #1f2937; padding-bottom: 80px; }
-/* HEADER */
 header {
 background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
 position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #e2e8f0;
@@ -44,16 +37,13 @@ padding: 1rem 5%; display: flex; justify-content: space-between; align-items: ce
 display: none; background: #1f2937; color: white; padding: 10px 5%;
 font-size: 0.85rem; justify-content: space-between; align-items: center;
 }
-/* GRID SYSTEM */
 .container { max-width: 1280px; margin: 0 auto; padding: 2rem 5%; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-/* MODULO DE ANÚNCIOS (VENDAS) */
 .section-header { margin: 2rem 0 1rem; display: flex; align-items: center; justify-content: space-between; }
 .section-title { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .filters-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .filter-pill { background: white; border: 1px solid #e2e8f0; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
 .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
-/* CARDS GERAIS */
 .card {
 background: white; border-radius: 12px; overflow: hidden;
 box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;
@@ -65,15 +55,11 @@ position: relative; border: 1px solid #f1f5f9; display: flex; flex-direction: co
 .card-price { font-size: 1.25rem; font-weight: 800; color: #111; margin-bottom: 4px; }
 .card-title { font-size: 1rem; color: #4b5563; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
 .card-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-/* PLANS STYLES */
 .card[data-plan="vip"] { border: 2px solid var(--vip); }
 .card[data-plan="commerce"] { border: 1px solid var(--commerce); }
 .badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .badge-vip { background: linear-gradient(135deg, #FFD700, #ffb300); color: black; }
 .badge-commerce { background: var(--commerce); color: white; }
-/* =========================================
-MÓDULO DE DOAÇÕES (SOLIDARIEDADE)
-========================================= */
 .donation-section {
 background: var(--heart-bg);
 border-top: 1px solid #fecdd3;
@@ -90,9 +76,6 @@ display: inline-block; background: #fff0f5; color: var(--heart);
 font-size: 0.75rem; font-weight: bold; padding: 2px 8px; border-radius: 4px;
 margin-bottom: 5px; border: 1px solid #fecdd3;
 }
-/* =========================================
-MÓDULO DE ACHADOS & PERDIDOS
-========================================= */
 .ap-section {
 background: var(--ap-bg);
 border-top: 1px solid #fde68a;
@@ -120,18 +103,15 @@ border-radius: 20px; font-size: 0.85rem; cursor: pointer;
 transition: 0.2s;
 }
 .ap-pill.active { background: var(--ap); color: white; border-color: var(--ap); }
-/* RECOMPENSA AP */
 .reward-badge {
 background: linear-gradient(135deg, #fbbf24, #f59e0b);
 color: white; padding: 4px 10px; border-radius: 12px;
 font-size: 0.75rem; font-weight: bold; display: inline-block;
 margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-/* UTILS */
 .btn-wpp { background: #25D366; color: white; display: block; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: auto; }
 .admin-controls { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; gap: 5px; }
 .btn-admin { flex: 1; border: none; padding: 6px; border-radius: 4px; color: white; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
-/* FORM MODAL */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
 .modal-content { background: white; width: 95%; max-width: 500px; padding: 1.5rem; border-radius: 16px; max-height: 90vh; overflow-y: auto; }
 .form-control { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
@@ -139,13 +119,11 @@ margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 .radio-plan { display: flex; gap: 10px; margin-bottom: 15px; }
 .plan-opt { flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 8px; text-align: center; cursor: pointer; opacity: 0.6; }
 .plan-opt.selected { border-color: var(--primary); opacity: 1; background: #eff6ff; }
-/* ADMIN STATUS */
 .card.pending { border: 2px dashed var(--danger); opacity: 0.8; }
 .card.pending::before { content: "PENDENTE ADMIN"; display: block; background: var(--danger); color: white; text-align: center; font-size: 0.7rem; font-weight: bold; padding: 4px; }
 .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
-/* ESTILO DO CONTADOR DE VISITAS */
 .visit-counter-box {
 display: inline-flex; align-items: center; gap: 8px;
 background: rgba(31, 41, 55, 0.05);
@@ -158,19 +136,16 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 </style>
 </head>
 <body>
-<!-- PAINEL ADMIN FLUTUANTE -->
 <div id="adminToolbar">
 <span>🔒 Admin Logado</span>
 <button onclick="Admin.logout()" style="background:#ef4444; border:none; padding:4px 10px; border-radius:4px; color:white;">Sair</button>
 </div>
-<!-- HEADER -->
 <header>
 <div class="brand">
 <h1>Super <span>Classificados SAD/BR</span> <span class="admin-badge" id="adminBadge">ADMIN</span></h1>
 </div>
 <button onclick="Modal.open()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">+ Anunciar</button>
 </header>
-<!-- ÁREA DE VENDAS -->
 <div class="container">
 <div id="pendingContainer" style="display:none; margin-bottom:2rem; background:#fff1f2; padding:1rem; border-radius:12px; border:1px solid #fecdd3;">
 <h3 style="color:var(--danger); margin-bottom:1rem;">⚠️ Fila de Aprovação (Admin)</h3>
@@ -179,16 +154,12 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <div class="section-header">
 <div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small></div>
 </div>
-<!-- FILTROS (Vendas) -->
-<div class="filters-scroll" id="filtersList">
-<!-- JS Gera -->
-</div>
+<div class="filters-scroll" id="filtersList"></div>
 <br>
 <div id="gridSales" class="grid">
 <div class="spinner"></div>
 </div>
 </div>
-<!-- MÓDULO DE ACHADOS & PERDIDOS -->
 <div class="ap-section">
 <div class="container">
 <div class="ap-header">
@@ -201,12 +172,9 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <div class="ap-pill" onclick="App.setAPFilter('achei', this)">🟢 Achei</div>
 <div class="ap-pill" onclick="App.setAPFilter('perdi', this)">🔴 Perdi</div>
 </div>
-<div id="gridAP" class="grid">
-<!-- Anúncios de Achados & Perdidos aqui -->
+<div id="gridAP" class="grid"></div>
 </div>
 </div>
-</div>
-<!-- MÓDULO DE DOAÇÕES INDEPENDENTE -->
 <div class="donation-section">
 <div class="container">
 <div class="donation-header">
@@ -214,13 +182,10 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <p>Opcional Extra: Doações de Objetos, Valores e Adoção de Animais</p>
 <button onclick="Modal.openDonation()" style="margin-top:10px; background:white; color:var(--heart); border:1px solid var(--heart); padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">Quero Doar Algo</button>
 </div>
-<div id="gridDonations" class="grid">
-<!-- Anúncios de Doação aqui -->
-</div>
+<div id="gridDonations" class="grid"></div>
 </div>
 </div>
 <footer>
-<!-- MÓDULO CONTADOR -->
 <div class="visit-counter-box" title="Total de acessos ao site">
 <span class="visit-icon">📊</span>
 <span class="visit-number" id="globalCounter">...</span>
@@ -241,14 +206,12 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <p>Odontocentro - Clínica odontológica - R. 13, 719 - Quadra 49 lote 03a, Centro, Santo Antônio do Descoberto - GO - Tel: N/D</p>
 <p style="margin-top:5px; cursor:pointer;" onclick="Admin.promptLogin()">Developed by <strong>Carlos Alberto Reis</strong> 🔒</p>
 </footer>
-<!-- MODAL DE CRIAÇÃO -->
 <div id="modalMain" class="modal-overlay">
 <div class="modal-content">
 <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
 <h3 id="modalTitle">Novo Anúncio</h3>
 <span onclick="Modal.close()" style="font-size:1.5rem; cursor:pointer;">&times;</span>
 </div>
-<!-- PASSO 1: CATEGORIA -->
 <div id="step1" class="step active">
 <label style="display:block; margin-bottom:5px; font-weight:bold;">O que você deseja anunciar?</label>
 <select id="inpCat" class="form-control">
@@ -258,12 +221,9 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <option value="servicos">🛠 Serviços</option>
 <option value="empregos">💼 Empregos</option>
 <option value="diversos">📦 Diversos</option>
-<!-- Achados & Perdidos -->
 <option value="achados_perdidos" style="color:#f59e0b; font-weight:bold;">🔍 Achados & Perdidos</option>
-<!-- "Opcional Extra" ativa modo doação via JS -->
 <option value="extra" style="color:#e11d48; font-weight:bold;">❤️ Opcional Extra (Doações)</option>
 </select>
-<!-- Campos para Doação -->
 <div id="donationFields" style="display:none; background:#fff1f2; padding:10px; border-radius:8px; margin-bottom:10px;">
 <label style="color:#e11d48; font-weight:bold;">Tipo de Doação:</label>
 <select id="inpDonationType" class="form-control" style="border-color:#fda4af;">
@@ -272,7 +232,6 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <option value="animal">🐾 Animais / Adoção</option>
 </select>
 </div>
-<!-- Campos para Achados & Perdidos -->
 <div id="apFields" style="display:none; background:#fffbeb; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #fde68a;">
 <label style="color:#b45309; font-weight:bold; display:block; margin-bottom:5px;">Situação:</label>
 <select id="inpAPType" class="form-control" style="border-color:#f59e0b; margin-bottom:8px;">
@@ -293,7 +252,6 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <input type="text" id="inpAPLocal" class="form-control" placeholder="Ex: Praça central, próximo ao mercado..." style="border-color:#f59e0b; margin-bottom:8px;">
 <label style="color:#b45309; font-weight:bold; display:block; margin-bottom:5px;">Data aproximada:</label>
 <input type="date" id="inpAPDate" class="form-control" style="border-color:#f59e0b;">
-<!-- RECOMPENSA OPCIONAL -->
 <label style="color:#b45309; font-weight:bold; display:block; margin-bottom:5px; margin-top:10px;">💰 Recompensa (opcional):</label>
 <input type="number" id="inpAPReward" class="form-control" placeholder="0.00" step="0.01" style="border-color:#f59e0b;">
 <small style="color:#78350f; font-size:0.75rem;">Ofereça um valor em PIX para quem encontrar/devolver</small>
@@ -315,12 +273,10 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <input type="text" id="inpTitle" class="form-control" placeholder="Título do Anúncio">
 <button onclick="Form.goNext()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">Continuar</button>
 </div>
-<!-- PASSO 2: DETALHES -->
 <div id="step2" class="step">
 <div id="priceBox" style="margin-bottom:12px;">
 <label>Definição do Valor</label>
 <div style="display:flex; gap:10px;">
-<!-- Seletor do Tipo -->
 <select id="selPriceType" class="form-control" style="width:40%; background:#f1f5f9; font-weight:bold;" onchange="Form.togglePrice()">
 <option value="brl">💲 R$ (Valor)</option>
 <option value="A Combinar">🤝 A Combinar</option>
@@ -329,9 +285,7 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <option value="Alugo">🔑 Alugo</option>
 <option value="custom">✍️ Texto Livre</option>
 </select>
-<!-- Caixa Numérica (Padrão) -->
 <input type="number" id="inpPrice" class="form-control" placeholder="0,00" style="width:60%;">
-<!-- Caixa de Texto (Escondida inicialmente) -->
 <input type="text" id="inpPriceText" class="form-control" placeholder="Ex: Oferta / Promoção" style="width:60%; display:none;">
 </div>
 </div>
@@ -344,7 +298,6 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <button onclick="Form.submit()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">Finalizar Anúncio</button>
 <button onclick="Modal.resetSteps()" style="width:100%; padding:10px; background:transparent; border:none; color:#666; margin-top:5px;">Voltar</button>
 </div>
-<!-- PASSO SUCESSO -->
 <div id="stepSuccess" class="step" style="text-align:center;">
 <div style="font-size:3rem;">🎉</div>
 <h3>Recebido!</h3>
@@ -358,20 +311,16 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 </div>
 </div>
 <script>
-/**
-* CONFIGURAÇÃO E DADOS
-*/
 const Config = {
 dbUrl: "https://super-class-df-default-rtdb.firebaseio.com/ads",
 adminKey: "0123class2025",
 pixKey: "61 999487649",
-// Regras de Planos (Dias e Preço)
 plans: {
 vip:      { name: 'VIP',      days: 30, price: 10.00 },
 commerce: { name: 'COMMERCE', days: 15, price: 6.00 },
 padrao:   { name: 'PADRÃO',   days: 7,  price: 3.00 },
-doacao:   { name: 'DOAÇÃO',   days: 30, price: 0.00 }, // Grátis
-ap:       { name: 'ACHADOS',  days: 30, price: 0.00 }  // Grátis, 30 dias
+doacao:   { name: 'DOAÇÃO',   days: 30, price: 0.00 },
+ap:       { name: 'ACHADOS',  days: 30, price: 0.00 }
 },
 categories: [
 {id:'todos', name:'Todos'},
@@ -381,13 +330,12 @@ categories: [
 {id:'empregos', name:'Empregos'},
 {id:'servicos', name:'Serviços'},
 {id:'diversos', name:'Diversos'},
-{id:'achados_perdidos', name:'Achados & Perdidos'} // ✅ CORRIGIDO
+{id:'achados_perdidos', name:'Achados & Perdidos'}
 ]
 };
 const Utils = {
 $: id => document.getElementById(id),
 currency: v => parseFloat(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
-// Compressão de Imagem
 compress: file => new Promise(resolve => {
 if(!file) resolve(null);
 const reader = new FileReader();
@@ -405,9 +353,6 @@ resolve(canvas.toDataURL('image/jpeg', 0.6));
 }
 })
 };
-/**
-* LÓGICA DE BANCO DE DADOS
-*/
 const Db = {
 getAll: async () => {
 try {
@@ -418,7 +363,7 @@ return d ? Object.keys(d).map(k=>({...d[k], id:k})) : [];
 },
 create: async (data) => {
 data.createdAt = Date.now();
-data.status = 'pending'; // Sempre começa pendente
+data.status = 'pending';
 const r = await fetch(Config.dbUrl + ".json", { method:'POST', body:JSON.stringify(data) });
 const d = await r.json();
 return d.name;
@@ -426,28 +371,29 @@ return d.name;
 update: async (id, data) => fetch(`${Config.dbUrl}/${id}.json`, {method:'PATCH', body:JSON.stringify(data)}),
 delete: async (id) => fetch(`${Config.dbUrl}/${id}.json`, {method:'DELETE'})
 };
-/**
-* ADMINISTRAÇÃO
-*/
 const Admin = {
 check: () => {
-if(localStorage.getItem('sc_adm') === 'true') {
-Utils.$('adminToolbar').style.display='flex';
-Utils.$('adminBadge').style.display='inline-block';
-Utils.$('pendingContainer').style.display='block';
-return true;
-}
-return false;
+const isAdmin = localStorage.getItem('sc_adm') === 'true';
+Utils.$('adminToolbar').style.display = isAdmin ? 'flex' : 'none';
+Utils.$('adminBadge').style.display = isAdmin ? 'inline-block' : 'none';
+Utils.$('pendingContainer').style.display = isAdmin ? 'block' : 'none';
+return isAdmin;
 },
 promptLogin: () => {
-if(prompt("Senha Admin:") === Config.adminKey) {
+const senha = prompt("Senha Admin:");
+if(senha === Config.adminKey) {
 localStorage.setItem('sc_adm','true');
-location.reload();
+Admin.check(); // ✅ Atualiza UI sem reload
+App.load(); // ✅ Recarrega dados
+alert('✅ Login realizado com sucesso!');
+} else if(senha !== null) {
+alert('❌ Senha incorreta!');
 }
 },
 logout: () => {
 localStorage.removeItem('sc_adm');
-location.reload();
+Admin.check(); // ✅ Atualiza UI sem reload
+App.load(); // ✅ Recarrega dados
 },
 approve: async (id) => {
 if(confirm("Confirmar aprovação?")) {
@@ -462,9 +408,6 @@ App.load();
 }
 }
 };
-/**
-* CORE APP
-*/
 const App = {
 currentCat: 'todos',
 currentAPFilter: 'todos',
@@ -472,7 +415,6 @@ init: () => {
 App.renderFilters();
 Admin.check();
 App.load();
-// Listener para o select de Categoria mudar o formulário
 Utils.$('inpCat').addEventListener('change', (e) => {
 const val = e.target.value;
 const isDonation = val === 'extra';
@@ -509,20 +451,18 @@ let sales = [];
 let donations = [];
 let apAds = [];
 let pending = [];
-// 1. Processar e Limpar Expirados
+let expiredIds = []; // ✅ Coleta IDs expirados para deletar em lote
 for(let ad of allAds) {
 const planRules = Config.plans[ad.plan] || Config.plans.padrao;
 const expireTime = planRules.days * 24 * 60 * 60 * 1000;
-// Auto Delete Expired
 if((now - ad.createdAt) > expireTime) {
-Db.delete(ad.id);
+expiredIds.push(ad.id); // ✅ Coleta para deletar depois
 continue;
 }
 if(ad.status === 'pending') {
 if(isAdmin) pending.push(ad);
 continue;
 }
-// Separação em 3 grupos
 if(ad.category === 'achados_perdidos' || ad.plan === 'ap') {
 if(App.currentAPFilter === 'todos' || ad.apType === App.currentAPFilter) {
 apAds.push(ad);
@@ -530,13 +470,17 @@ apAds.push(ad);
 } else if(ad.plan === 'doacao' || ad.category === 'extra') {
 donations.push(ad);
 } else {
-// Filtro de Categoria de Vendas
 if(App.currentCat === 'todos' || ad.category === App.currentCat) {
 sales.push(ad);
 }
 }
 }
-// Ordenar: VIP > Commerce > Padrão
+// ✅ Deleta expirados em background (não bloqueia UI)
+if(expiredIds.length > 0) {
+setTimeout(() => {
+expiredIds.forEach(id => Db.delete(id).catch(() => {}));
+}, 1000);
+}
 const w = { vip: 3, commerce: 2, padrao: 1, doacao: 0, ap: 0 };
 sales.sort((a,b) => (w[b.plan] - w[a.plan]) || (b.createdAt - a.createdAt));
 apAds.sort((a,b) => b.createdAt - a.createdAt);
@@ -556,11 +500,9 @@ return;
 list.forEach(ad => {
 const imgUrl = ad.image || 'https://placehold.co/400x250?text=Sem+Foto';
 let badge = '';
-// 1. DEFINIR O BADGE (ETIQUETA)
 if(ad.plan === 'vip') badge = `<span class="badge badge-vip">💎 VIP 30D</span>`;
 else if(ad.plan === 'commerce') badge = `<span class="badge badge-commerce">🚀 COMMERCE 15D</span>`;
 else if(isDonationMode) badge = `<span class="badge" style="background:var(--heart)">❤️ DOAÇÃO</span>`;
-// 2. DEFINIR O PREÇO OU TEXTO
 const val = (ad.price !== undefined) ? ad.price : (ad.prodPrice || 0);
 let priceText = "";
 if(isDonationMode) {
@@ -572,7 +514,6 @@ priceText = Utils.currency(val);
 priceText = `<span style="font-size:0.9em; color:var(--primary); font-weight:700;">${val}</span>`;
 }
 }
-// 3. BOTÕES DE ADMIN
 let adminHtml = '';
 if(Admin.check()) {
 const txtBtn = (ad.plan==='doacao' || ad.plan==='ap') ? "Aprovar (Grátis)" : "Validar PIX";
@@ -583,7 +524,6 @@ ${isPendingMode ? `<button class="btn-admin" style="background:var(--success)" o
 </div>
 `;
 }
-// 4. CRIAR O HTML DO CARTÃO
 const card = document.createElement('div');
 card.className = `card ${isPendingMode ? 'pending' : ''}`;
 card.setAttribute('data-plan', ad.plan);
@@ -625,7 +565,6 @@ if(ad.apDate) {
 const [y,m,d] = ad.apDate.split('-');
 dateText = `${d}/${m}/${y}`;
 }
-// RECOMPENSA
 let rewardHtml = '';
 if(ad.apReward && parseFloat(ad.apReward) > 0) {
 rewardHtml = `<div class="reward-badge">💰 Recompensa: ${Utils.currency(ad.apReward)}</div>`;
@@ -663,9 +602,6 @@ el.appendChild(card);
 });
 }
 };
-/**
-* LÓGICA DO FORMULÁRIO
-*/
 const Form = {
 currentPlan: 'padrao',
 planPrice: 3,
@@ -726,7 +662,7 @@ apType: isAP ? Utils.$('inpAPType').value : null,
 apCategory: isAP ? Utils.$('inpAPCategory').value : null,
 apLocal: isAP ? Utils.$('inpAPLocal').value : null,
 apDate: isAP ? Utils.$('inpAPDate').value : null,
-apReward: isAP ? Utils.$('inpAPReward').value : null // ✅ NOVO - Recompensa
+apReward: isAP ? Utils.$('inpAPReward').value : null
 };
 const finalPlanData = Config.plans[data.plan];
 const feeToPay = finalPlanData.price;
@@ -766,12 +702,9 @@ resetSteps: () => {
 document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
 Utils.$('step1').classList.add('active');
 Utils.$('inpCat').value = 'veiculos';
-Utils.$('inpCat').dispatchEvent(new Event('change')); // ✅ CORRIGIDO
+Utils.$('inpCat').dispatchEvent(new Event('change'));
 }
 };
-/**
-* CONTADOR DE VISITAS
-*/
 const Visits = {
 init: async () => {
 const baseUrl = Config.dbUrl.replace(/\/ads$/, '');
