@@ -4,7 +4,7 @@ Como entrar no Painel:
 Vá até o rodapé do site (lá embaixo).
 Ao lado de "Developed by Carlos Alberto Reis", tem um pequeno cadeado: 🔒.
 Clique nele.
-Digite a senha: 0123class2025.
+Digite a senha: ####class20**.
 O que acontece após o login:
 Uma Barra Preta aparece no topo ("Painel Administrativo Ativo").
 Uma seção chamada "⚠️ Fila de Aprovação" aparece se houverem novos anúncios.
