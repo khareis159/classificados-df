@@ -761,6 +761,7 @@ Visits.init();
 };
 window.addEventListener('load', App.init);
 
+// Inicia o contador de visitas Apex
 function initApexCounter(config) {
     const { storageKey, baseValue, growthRate, startDate } = config;
     
@@ -768,28 +769,29 @@ function initApexCounter(config) {
     let local = parseInt(localStorage.getItem(storageKey)) || 0;
     local++;
     localStorage.setItem(storageKey, local);
-    document.getElementById('lCount').textContent = local;
+    
+    const lElem = document.getElementById('lCount');
+    if (lElem) lElem.textContent = local;
 
     // 2. Engenharia Matemática de Crescimento Orgânico
-    // Cálculo: Base + (Dias desde lançamento * Taxa de Crescimento) + Local
     const launch = new Date(startDate).getTime();
     const now = new Date().getTime();
     const daysPassed = Math.floor((now - launch) / (1000 * 60 * 60 * 24));
     
-    // Proteção caso a data do sistema esteja errada
     const safeDays = daysPassed > 0 ? daysPassed : 0;
     const simulatedGlobal = baseValue + (safeDays * growthRate) + local;
 
-    // 3. Exibição com formatação brasileira (milhar)
-    document.getElementById('gCount').textContent = simulatedGlobal.toLocaleString('pt-BR');
+    // 3. Exibição
+    const gElem = document.getElementById('gCount');
+    if (gElem) gElem.textContent = simulatedGlobal.toLocaleString('pt-BR');
 }
 
-// Inicialização imediata
+// Chama a função (DNA do App Classificados)
 initApexCounter({
-    storageKey: 'meu_app_identificador_unico_classificados', // Mude para cada app novo
-    baseValue: 5001,                         // Valor inicial de autoridade
-    growthRate: 12,                          // Quantos acessos "ganha" por dia
-    startDate: '2026-01-01'                  // Data de nascimento do projeto
+    storageKey: 'sc_sad_br_v4', 
+    baseValue: 5001,                         
+    growthRate: 15,                          
+    startDate: '2026-01-01'                  
 });
 
 </script>
