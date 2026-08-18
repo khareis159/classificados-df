@@ -127,20 +127,29 @@ margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 
 /* Estilo HUD Tecnológico do Contador */
+/* Design Customizado para Super Classificados */
 .apex-counter-hub {
-    font-family: 'JetBrains Mono', monospace; /* Requer Google Fonts */
+    font-family: 'Inter', sans-serif; /* Usando a fonte do seu app */
     font-size: 0.6rem;
-    text-align: center;
-    color: #f59e0b; /* Amarelo Gold */
-    background: rgba(0,0,0,0.4);
+    text-align: left;
+    color: var(--primary); /* Texto Azul do App */
+    background: transparent; /* FUNDO TRANSPARENTE */
     padding: 6px 15px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    line-height: 1.3;
+    border-radius: 12px; /* Cantos seguindo o padrão dos seus cards */
+    border: 1px solid var(--primary); /* BORDA AZUL */
+    line-height: 1.4;
     display: inline-block;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.apex-counter-hub b { color: #fff; }
 
+/* Cor dos números dentro do contador */
+.apex-counter-hub b { 
+    color: #1f2937; /* Cinza escuro para combinar com os títulos do app */
+    font-family: monospace;
+    font-size: 0.8rem;
+}
 
 </style>
 </head>
