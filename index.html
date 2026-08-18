@@ -172,6 +172,28 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 .btn-next-guide { background: var(--primary); color: white; }
 .btn-close-guide { background: #e2e8f0; color: #475569; }
 
+/* Estilo do Plano Social/Grátis */
+.card[data-plan="social"] { 
+    border: 1px solid #cbd5e1; 
+    background: #f1f5f9; /* Tom cinza neutro */
+}
+.badge-social { 
+    background: #64748b; 
+    color: white; 
+}
+.card[data-plan="social"] .card-img { 
+    height: 100px; /* Foto menor para o plano grátis */
+    filter: grayscale(100%); /* Diferencial visual para o pago */
+    opacity: 0.7;
+}
+.social-info {
+    font-size: 0.7rem;
+    color: var(--danger);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
 </style>
 </head>
 <body>
@@ -214,8 +236,7 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
             <span class="guide-icon">✅</span>
             <h3 class="guide-title">PRONTO!</h3>
             <p class="guide-text">Agora é só mandar o <strong>print do Pix</strong> pelo WhatsApp que o sistema abre para você!</p>
-            <p class="guide-text">ATENÇÃO: <strong> No seu Primeiro Anúncio não precisa Pix</strong> Basta clicar no X e fechar a janela do Envio pelo WhatsApp!</p>
-            <p class="guide-text">É só aguardar a <strong> LIBERAÇÃO DO ANÚNCIO</strong> pelo administrador e fazer bons negócios!</p>
+            <p class="guide-text">ATENÇÃO:<strong>No seu Primeiro Anuncio não precisa Pix</strong> Basta clicar no X e fechar a janela do Envio pelo WhatsApp!</p>
         </div>
 
         <div class="guide-footer">
@@ -249,7 +270,7 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 <div id="gridPending" class="grid"></div>
 </div>
 <div class="section-header">
-<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small>Toque em +ANUNCIAR... Dúvidas? Zap 61999487649</div>
+<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small>Toque em +ANUNCIAR... Dúdidas? Zap 61999484649</div>
 </div>
 <div class="filters-scroll" id="filtersList"></div>
 <br>
@@ -359,6 +380,12 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 </div>
 <div class="plan-opt" onclick="Form.selectPlan('padrao', 3, this)">
 <strong>PADRÃO</strong><br>7 Dias<br><span style="color:#666">R$ 3,00</span>
+
+<!-- Adicione este botão dentro da div 'radio-plan' -->
+<div class="plan-opt" onclick="Form.selectPlan('social', 0, this)" style="border-color:#64748b;">
+    <strong>SOCIAL</strong><br>3 Dias<br><span style="color:#64748b">GRÁTIS</span>
+</div>
+
 </div>
 </div>
 </div>
@@ -411,6 +438,7 @@ plans: {
 vip:      { name: 'VIP',      days: 30, price: 10.00 },
 commerce: { name: 'COMMERCE', days: 15, price: 6.00 },
 padrao:   { name: 'PADRÃO',   days: 7,  price: 3.00 },
+social:   { name: 'GRÁTIS',   days: 3,  price: 0.00 }, // <--- ESTA É A LINHA NOVA DO PLANO FREE
 doacao:   { name: 'DOAÇÃO',   days: 30, price: 0.00 },
 ap:       { name: 'ACHADOS',  days: 30, price: 0.00 }
 },
@@ -863,6 +891,10 @@ function updateABC() {
     const btnNext = document.querySelector('.btn-next-guide');
     btnNext.innerText = currentABC === stepsABC.length - 1 ? "Entendi!" : "Próximo ➔";
 }
+
+
+
+
 
 </script>
 </body>
