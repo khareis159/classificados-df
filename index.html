@@ -125,16 +125,6 @@ margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
-.visit-counter-box {
-display: inline-flex; align-items: center; gap: 8px;
-background: rgba(31, 41, 55, 0.05);
-padding: 5px 15px; border-radius: 20px;
-margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
-}
-.visit-icon { font-size: 1.1rem; }
-.visit-number { font-weight: 800; color: var(--primary); font-family: monospace; font-size: 1rem; }
-.visit-label { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
 
 /* Estilo HUD Tecnológico do Contador */
 .apex-counter-hub {
@@ -177,7 +167,7 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <div id="gridPending" class="grid"></div>
 </div>
 <div class="section-header">
-<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small>30 dias Grátis, Toque em +ANUNCIAR... Dúvidas, Zap 61999487649.</div>
+<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small></div>
 </div>
 <div class="filters-scroll" id="filtersList"></div>
 <br>
@@ -211,11 +201,6 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 </div>
 </div>
 <footer>
-<div class="visit-counter-box" title="Total de acessos ao site">
-<span class="visit-icon">📊</span>
-<span class="visit-number" id="globalCounter">...</span>
-<span class="visit-label">Visitas</span>
-</div>
 <p>Super Classificados SAD/BR © 2025 • Serviço de Utilidade Pública - Goiás / Brasil</p>
 <p>Supermercado Premium - Produtos alimentícios e utilidades - Av. Castelo Branco, 1406 - Parque Estrela Dalva XI, Santo Antônio do Descoberto - GO - Tel: N/D</p>
 <p>Atacadão Dia a Dia - Rede atacadista de alimentos - Quadra 4, Lotes 01 a 03, Centro, Santo Antônio do Descoberto - GO - Tel: N/D</p>
@@ -730,35 +715,7 @@ Utils.$('inpCat').value = 'veiculos';
 Utils.$('inpCat').dispatchEvent(new Event('change'));
 }
 };
-const Visits = {
-init: async () => {
-const baseUrl = Config.dbUrl.replace(/\/ads$/, '');
-const statsUrl = `${baseUrl}/site_stats.json`;
-const el = document.getElementById('globalCounter');
-try {
-let res = await fetch(statsUrl);
-let data = await res.json();
-let count = (data && data.visits) ? data.visits : 0;
-if (!sessionStorage.getItem('sc_visited')) {
-count++;
-fetch(statsUrl, {
-method: 'PATCH',
-body: JSON.stringify({ visits: count })
-}).catch(err => console.error("Erro contador", err));
-sessionStorage.setItem('sc_visited', 'true');
-}
-el.innerText = count.toLocaleString('pt-BR');
-} catch (e) {
-el.innerText = "-";
-console.log("Stats offline");
-}
-}
-};
-const originalInit = App.init;
-App.init = () => {
-originalInit();
-Visits.init();
-};
+
 window.addEventListener('load', App.init);
 
 // Inicia o contador de visitas Apex
