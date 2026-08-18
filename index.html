@@ -134,6 +134,24 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 .visit-icon { font-size: 1.1rem; }
 .visit-number { font-weight: 800; color: var(--primary); font-family: monospace; font-size: 1rem; }
 .visit-label { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+
+/* Estilo HUD Tecnológico do Contador */
+.apex-counter-hub {
+    font-family: 'JetBrains Mono', monospace; /* Requer Google Fonts */
+    font-size: 0.6rem;
+    text-align: center;
+    color: #f59e0b; /* Amarelo Gold */
+    background: rgba(0,0,0,0.4);
+    padding: 6px 15px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    line-height: 1.3;
+    display: inline-block;
+}
+.apex-counter-hub b { color: #fff; }
+
+
 </style>
 </head>
 <body>
@@ -145,6 +163,11 @@ margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);
 <div class="brand">
 <h1>Super <span>Classificados SAD/BR</span> <span class="admin-badge" id="adminBadge">ADMIN</span></h1>
 </div>
+
+🌐 ACESSOS GLOBAIS: <b id="gCount">...</b><br>
+    👤 SEUS ACESSOS: <b id="lCount">0</b>
+
+
 <button onclick="Modal.open()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">+ Anunciar</button>
 </header>
 <div class="container">
@@ -736,6 +759,39 @@ originalInit();
 Visits.init();
 };
 window.addEventListener('load', App.init);
+
+<script>
+function initApexCounter(config) {
+    const { storageKey, baseValue, growthRate, startDate } = config;
+    
+    // 1. Gerenciamento Local
+    let local = parseInt(localStorage.getItem(storageKey)) || 0;
+    local++;
+    localStorage.setItem(storageKey, local);
+    document.getElementById('lCount').textContent = local;
+
+    // 2. Engenharia Matemática de Crescimento Orgânico
+    // Cálculo: Base + (Dias desde lançamento * Taxa de Crescimento) + Local
+    const launch = new Date(startDate).getTime();
+    const now = new Date().getTime();
+    const daysPassed = Math.floor((now - launch) / (1000 * 60 * 60 * 24));
+    
+    // Proteção caso a data do sistema esteja errada
+    const safeDays = daysPassed > 0 ? daysPassed : 0;
+    const simulatedGlobal = baseValue + (safeDays * growthRate) + local;
+
+    // 3. Exibição com formatação brasileira (milhar)
+    document.getElementById('gCount').textContent = simulatedGlobal.toLocaleString('pt-BR');
+}
+
+// Inicialização imediata
+initApexCounter({
+    storageKey: 'meu_app_identificador_unico_classificados', // Mude para cada app novo
+    baseValue: 5001,                         // Valor inicial de autoridade
+    growthRate: 12,                          // Quantos acessos "ganha" por dia
+    startDate: '2026-01-01'                  // Data de nascimento do projeto
+});
+
 </script>
 </body>
 </html>
