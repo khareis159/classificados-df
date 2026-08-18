@@ -151,9 +151,78 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
     font-size: 0.8rem;
 }
 
+/* Estilo do Manual ABC */
+.guide-modal {
+    display: none; position: fixed; inset: 0; 
+    background: rgba(0,0,0,0.85); z-index: 2000;
+    align-items: center; justify-content: center; backdrop-filter: blur(8px);
+}
+.guide-content {
+    background: white; width: 90%; max-width: 380px; 
+    border-radius: 25px; overflow: hidden; position: relative;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.guide-step { display: none; padding: 30px; text-align: center; animation: fadeIn 0.3s; }
+.guide-step.active { display: block; }
+.guide-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+.guide-title { color: var(--primary); font-weight: 800; font-size: 1.2rem; margin-bottom: 10px; }
+.guide-text { color: #4b5563; font-size: 0.95rem; line-height: 1.4; }
+.guide-footer { background: #f1f5f9; padding: 20px; display: flex; gap: 10px; }
+.btn-guide { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.btn-next-guide { background: var(--primary); color: white; }
+.btn-close-guide { background: #e2e8f0; color: #475569; }
+
 </style>
 </head>
 <body>
+
+<!-- Manual ABC do Anunciante -->
+<div id="guideModal" class="guide-modal">
+    <div class="guide-content">
+        <!-- Passo 1 -->
+        <div class="guide-step active">
+            <span class="guide-icon">🔵</span>
+            <h3 class="guide-title">PASSO 1</h3>
+            <p class="guide-text">Toque no botão azul lá no topo que diz <strong>"+ Anunciar"</strong>.</p>
+        </div>
+        <!-- Passo 2 -->
+        <div class="guide-step">
+            <span class="guide-icon">🚗</span>
+            <h3 class="guide-title">PASSO 2</h3>
+            <p class="guide-text">Escolha o que você vai vender (Carro, Casa, Celular ou outro).</p>
+        </div>
+        <!-- Passo 3 -->
+        <div class="guide-step">
+            <span class="guide-icon">✍️</span>
+            <h3 class="guide-title">PASSO 3</h3>
+            <p class="guide-text">Escreva um nome para o seu anúncio e toque em <strong>"Continuar"</strong>.</p>
+        </div>
+        <!-- Passo 4 -->
+        <div class="guide-step">
+            <span class="guide-icon">💰</span>
+            <h3 class="guide-title">PASSO 4</h3>
+            <p class="guide-text">Coloque o preço, escreva os detalhes do item e coloque seu <strong>WhatsApp</strong>.</p>
+        </div>
+        <!-- Passo 5 -->
+        <div class="guide-step">
+            <span class="guide-icon">📸</span>
+            <h3 class="guide-title">PASSO 5</h3>
+            <p class="guide-text">Escolha uma foto bem bonita do seu produto e toque em <strong>"Finalizar"</strong>.</p>
+        </div>
+        <!-- Passo 6 -->
+        <div class="guide-step">
+            <span class="guide-icon">✅</span>
+            <h3 class="guide-title">PRONTO!</h3>
+            <p class="guide-text">Agora é só mandar o <strong>print do Pix</strong> pelo WhatsApp que o sistema abre para você!</p>
+        </div>
+
+        <div class="guide-footer">
+            <button class="btn-guide btn-close-guide" onclick="closeABC()">Fechar</button>
+            <button class="btn-guide btn-next-guide" onclick="nextABC()">Próximo ➔</button>
+        </div>
+    </div>
+</div>
+
 <div id="adminToolbar">
 <span>🔒 Admin Logado</span>
 <button onclick="Admin.logout()" style="background:#ef4444; border:none; padding:4px 10px; border-radius:4px; color:white;">Sair</button>
@@ -167,6 +236,8 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
     🌐 ACESSOS GLOBAIS: <b id="gCount">...</b><br>
     👤 SEUS ACESSOS: <b id="lCount">0</b>
 </div>
+
+<button onclick="openABC()" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; padding:8px 12px; border-radius:20px; font-weight:bold; cursor:pointer; margin-right:5px; font-size:0.8rem;">💡 Ajuda</button>
     
 <button onclick="Modal.open()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">+ Anunciar</button>
 </header>
@@ -176,7 +247,7 @@ footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.8rem; }
 <div id="gridPending" class="grid"></div>
 </div>
 <div class="section-header">
-<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small>Toque em +ANUNCIAR... Dúvidas? Zap 61999484649</div>
+<div class="section-title">📢 Classificados <small id="adsCount" style="color:#999; font-weight:400; font-size:0.8rem"></small>Toque em +ANUNCIAR... Dúdidas? Zap 61999484649</div>
 </div>
 <div class="filters-scroll" id="filtersList"></div>
 <br>
@@ -759,6 +830,37 @@ initApexCounter({
     growthRate: 15,                          
     startDate: '2026-01-01'                  
 });
+
+// Chama Manual
+let currentABC = 0;
+const stepsABC = document.querySelectorAll('.guide-step');
+
+function openABC() {
+    document.getElementById('guideModal').style.display = 'flex';
+}
+
+function closeABC() {
+    document.getElementById('guideModal').style.display = 'none';
+    currentABC = 0;
+    updateABC();
+}
+
+function nextABC() {
+    if (currentABC < stepsABC.length - 1) {
+        currentABC++;
+        updateABC();
+    } else {
+        closeABC();
+    }
+}
+
+function updateABC() {
+    stepsABC.forEach((step, i) => {
+        step.classList.toggle('active', i === currentABC);
+    });
+    const btnNext = document.querySelector('.btn-next-guide');
+    btnNext.innerText = currentABC === stepsABC.length - 1 ? "Entendi!" : "Próximo ➔";
+}
 
 </script>
 </body>
